@@ -1,5 +1,5 @@
 {
-    "name": "cct-marketing/api-skeleton-sdk",
+    "name": "cct-marketing/rest",
     "description": "Base library to create an API sdk for CCT Microservices",
     "type": "library",
     "require": {

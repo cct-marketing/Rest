@@ -1,6 +1,6 @@
 #REST API Component
 
-A REST((Representational State Transfer) library to help rapidly develop RESTful web service SDKs. Supports
+A REST(Representational State Transfer) library to help rapidly develop RESTful web service SDKs. Supports
 serilization of response and request to objects.
 
 ##Installation
@@ -82,7 +82,7 @@ class RESTClient extends AbstractClient
 }
 ```
 
-To use it then just run:
+To run:
 
 ```PHP
 $config = new \CCT\Component\Rest\Config([
