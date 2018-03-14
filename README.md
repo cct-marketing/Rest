@@ -1,5 +1,10 @@
 # REST API Component
 
+[![Latest Stable Version](https://poser.pugx.org/cct-marketing/rest/v/stable)](https://packagist.org/packages/cct-marketing/rest)
+[![Total Downloads](https://poser.pugx.org/cct-marketing/rest/downloads)](https://packagist.org/packages/cct-marketing/rest)
+[![Latest Unstable Version](https://poser.pugx.org/cct-marketing/rest/v/unstable)](https://packagist.org/packages/cct-marketing/rest)
+[![License](https://poser.pugx.org/cct-marketing/rest/license)](https://packagist.org/packages/cct-marketing/rest)
+
 A REST(Representational State Transfer) library to help rapidly develop RESTful web service SDKs. Supports
 serilization of response and request to objects.
 
