@@ -1,15 +1,15 @@
-#REST API Component
+# REST API Component
 
 A REST(Representational State Transfer) library to help rapidly develop RESTful web service SDKs. Supports
 serilization of response and request to objects.
 
-##Installation
+## Installation
 
 ```bash
 composer require cct-marketing/rest
 ```
 
-###Serilizer Libraries (Optional)
+### Serilizer Libraries (Optional)
 If no serilizer is install all responses will be returned as an array
 
 **Recommended** [JMS Seriliser](https://github.com/schmittjoh/serializer)
@@ -23,7 +23,7 @@ composer require symfony/serializer
 composer require symfony/property-access
 ```
 
-##Usage
+## Usage
 To use the library you just need to extend the AbstractClient and AbstractRequest classes
 
 
