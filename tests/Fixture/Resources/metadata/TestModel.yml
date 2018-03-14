@@ -1,0 +1,5 @@
+CCT\Component\Rest\Tests\Fixture\TestModel:
+  properties:
+    heading:
+      type: string
+      groups: [read]
