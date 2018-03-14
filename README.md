@@ -6,7 +6,7 @@ serilization of response and request to objects.
 ##Installation
 
 ```bash
-composer require TOUPDATE
+composer require cct-marketing/rest
 ```
 
 ###Serilizer Libraries (Optional)
