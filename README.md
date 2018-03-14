@@ -91,7 +91,7 @@ To run:
 
 ```PHP
 $config = new \CCT\Component\Rest\Config([
-    \CCT\Component\Rest\Config::ENDPOINT => 'https://web-scraping.cct.marketing/',
+    \CCT\Component\Rest\Config::ENDPOINT => 'https://api.endpoint.com/',
     \CCT\Component\Rest\Config::DEBUG => true,
 ]);
 
