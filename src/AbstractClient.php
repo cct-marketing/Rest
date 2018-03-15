@@ -81,17 +81,17 @@ abstract class AbstractClient
     protected function buildSerializer(Config $config)
     {
 
-//        if (class_exists('JMS\Serializer\Serializer')) {
-//            return JMSSerializerBuilder::createByConfig($config)
-//                ->configureDefaults()
-//                ->build();
-//        }
-//
-//        if (class_exists('Symfony\Component\Serializer\Serializer')) {
-//            return JMSSerializerBuilder::createByConfig($config)
-//                ->configureDefaults()
-//                ->build();
-//        }
+        if (class_exists('JMS\Serializer\Serializer')) {
+            return JMSSerializerBuilder::createByConfig($config)
+                ->configureDefaults()
+                ->build();
+        }
+
+        if (class_exists('Symfony\Component\Serializer\Serializer')) {
+            return JMSSerializerBuilder::createByConfig($config)
+                ->configureDefaults()
+                ->build();
+        }
 
         return null;
     }

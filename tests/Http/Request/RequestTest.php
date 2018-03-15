@@ -12,7 +12,6 @@ use CCT\Component\Rest\Transformer\Response\ObjectTransformer;
 
 class RequestTest extends AbstractTestRequest
 {
-
     public function testRequestWithValidResponseNoSerializer()
     {
         $client = $this->createClientMocked(Response::HTTP_OK, 'simple_api_request.json');
@@ -65,8 +64,6 @@ class RequestTest extends AbstractTestRequest
             TestRequest::class,
             $config
         );
-
         return $request;
     }
-
 }
