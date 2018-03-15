@@ -3,10 +3,10 @@
 namespace CCT\Component\Rest\Transformer\Response;
 
 use CCT\Component\Rest\Http\Response;
-use CCT\Component\Rest\Transformer\SerializerTransformer;
+use CCT\Component\Rest\Transformer\AbstractSerializerTransformer;
 use CCT\Component\Rest\Http\ResponseInterface;
 
-class ObjectTransformer extends SerializerTransformer
+class ObjectTransformer extends AbstractSerializerTransformer
 {
     /**
      * @param ResponseInterface|Response $response

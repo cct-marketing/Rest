@@ -7,7 +7,7 @@ namespace CCT\Component\Rest\Transformer;
 use CCT\Component\Rest\Serializer\ContextInterface;
 use CCT\Component\Rest\Serializer\SerializerInterface;
 
-abstract class SerializerTransformer implements TransformerInterface
+abstract class AbstractSerializerTransformer implements TransformerInterface
 {
     /**
      * @var Serializer
