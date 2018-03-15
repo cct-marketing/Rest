@@ -10,7 +10,7 @@ use CCT\Component\Rest\Tests\Fixture\TestRequest;
 use CCT\Component\Rest\Transformer\Response\CollectionObjectTransformer;
 use CCT\Component\Rest\Transformer\Response\ObjectTransformer;
 
-class RequestTest extends AbstractRequest
+class RequestTest extends AbstractTestRequest
 {
 
     public function testRequestWithValidResponseNoSerializer()

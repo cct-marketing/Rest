@@ -20,7 +20,7 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Uri;
 
-abstract class Request implements RequestInterface
+abstract class AbstractRequest implements RequestInterface
 {
     /**
      * @var GuzzleClient

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace CCT\Component\Rest\Tests\Http\Request;
 
 use CCT\Component\Rest\Config;
-use CCT\Component\Rest\Http\Request;
+use CCT\Component\Rest\Http\AbstractRequest;
 use CCT\Component\Rest\Serializer\JMSSerializerBuilder;
 use CCT\Component\Rest\Serializer\SerializerInterface;
 use CCT\Component\Rest\Serializer\SymfonySerializerBuilder;
@@ -16,7 +16,7 @@ use JMS\Serializer\Serializer;
 use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Psr7\Response;
 
-abstract class AbstractRequest extends TestCase
+abstract class AbstractTestRequest extends TestCase
 {
     use ProtectedMethodSetter;
 
@@ -132,9 +132,9 @@ abstract class AbstractRequest extends TestCase
      * @param string $class
      * @param Config $config
      *
-     * @return Request
+     * @return AbstractRequest
      */
-    protected function createRequest($client, $class, Config $config): Request
+    protected function createRequest($client, $class, Config $config): AbstractRequest
     {
         $request = new $class($client, $config, $this->getSerializer());
 

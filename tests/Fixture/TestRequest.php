@@ -4,10 +4,10 @@ namespace CCT\Component\Rest\Tests\Fixture;
 
 use CCT\Component\Rest\Config;
 use CCT\Component\Rest\Http\Definition\RequestHeaders;
-use CCT\Component\Rest\Http\Request;
+use CCT\Component\Rest\Http\AbstractRequest;
 use CCT\Component\Rest\Serializer\Context\Context;
 
-class TestRequest extends Request
+class TestRequest extends AbstractRequest
 {
     protected function setUp()
     {
