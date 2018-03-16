@@ -34,12 +34,12 @@ final class Context implements ContextInterface
     /**
      * @var array|null
      */
-    private $groups;
+    private $groups = null;
 
     /**
-     * @var int
+     * @var int|null
      */
-    private $maxDepth;
+    private $maxDepth = null;
 
     /**
      * @var bool
@@ -47,7 +47,7 @@ final class Context implements ContextInterface
     private $isMaxDepthEnabled;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $serializeNull;
 
@@ -197,24 +197,9 @@ final class Context implements ContextInterface
      * @param int|null $maxDepth
      *
      * @return self
-     *
-     * @deprecated since 2.1, to be removed in 3.0.
-     *              Use {@link self::enableMaxDepth()} and {@link self::disableMaxDepth()} instead
      */
     public function setMaxDepth($maxDepth)
     {
-        if (1 === func_num_args() || func_get_arg(1)) {
-            @trigger_error(
-                sprintf(
-                    '%s is deprecated since version 2.1 and will be removed in 3.0. 
-                    Use %s::enableMaxDepth() and %s::disableMaxDepth() instead.',
-                    __METHOD__,
-                    __CLASS__,
-                    __CLASS__
-                ),
-                E_USER_DEPRECATED
-            );
-        }
         $this->maxDepth = $maxDepth;
 
         return $this;
@@ -225,22 +210,9 @@ final class Context implements ContextInterface
      *
      * @return int|null
      *
-     * @deprecated since version 2.1, to be removed in 3.0. Use {@link self::isMaxDepthEnabled()} instead
      */
     public function getMaxDepth()
     {
-        if (0 === func_num_args() || func_get_arg(0)) {
-            @trigger_error(
-                sprintf(
-                    '%s is deprecated since version 2.1 and will be removed in 3.0.
-                     Use %s::isMaxDepthEnabled() instead.',
-                    __METHOD__,
-                    __CLASS__
-                ),
-                E_USER_DEPRECATED
-            );
-        }
-
         return $this->maxDepth;
     }
 

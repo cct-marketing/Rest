@@ -16,6 +16,11 @@ class SymfonySerializerAdapter implements SerializerInterface
      */
     private $serializer;
 
+    /**
+     * SymfonySerializerAdapter constructor.
+     *
+     * @param SymfonySerializerInterface $serializer
+     */
     public function __construct(SymfonySerializerInterface $serializer)
     {
         $this->serializer = $serializer;
@@ -69,7 +74,7 @@ class SymfonySerializerAdapter implements SerializerInterface
             $newContext['groups'] = $context->getGroups();
         }
         $newContext['version'] = $context->getVersion();
-        $newContext['maxDepth'] = $context->getMaxDepth(false);
+        $newContext['maxDepth'] = $context->getMaxDepth();
         $newContext['enable_max_depth'] = $context->isMaxDepthEnabled();
 
         return $newContext;

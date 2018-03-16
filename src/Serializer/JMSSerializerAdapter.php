@@ -9,12 +9,12 @@ use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
-use JMS\Serializer\SerializerInterface;
+use JMS\Serializer\SerializerInterface as JMSSerializerInterface;
 
 /**
  * Adapter to plug the JMS serializer into the FOSRestBundle Serializer API.
  */
-class JMSSerializerAdapter implements \CCT\Component\Rest\Serializer\SerializerInterface
+class JMSSerializerAdapter implements SerializerInterface
 {
     /**
      * @internal
@@ -27,7 +27,7 @@ class JMSSerializerAdapter implements \CCT\Component\Rest\Serializer\SerializerI
     const DESERIALIZATION = 1;
 
     /**
-     * @var SerializerInterface|Serializer
+     * @var JMSSerializerInterface|Serializer
      */
     private $serializer;
 
@@ -42,7 +42,7 @@ class JMSSerializerAdapter implements \CCT\Component\Rest\Serializer\SerializerI
     private $deserializationContextFactory;
 
     public function __construct(
-        SerializerInterface $serializer,
+        JMSSerializerInterface $serializer,
         SerializationContextFactoryInterface $serializationContextFactory = null,
         DeserializationContextFactoryInterface $deserializationContextFactory = null
     ) {

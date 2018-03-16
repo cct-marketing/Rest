@@ -2,7 +2,6 @@
 
 namespace CCT\Component\Rest\Transformer\Response;
 
-use CCT\Component\Rest\Model\Response\ContentCollection;
 use CCT\Component\Rest\Transformer\AbstractSerializerTransformer;
 use CCT\Component\Rest\Http\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;
