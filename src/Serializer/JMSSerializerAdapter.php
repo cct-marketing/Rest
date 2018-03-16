@@ -8,6 +8,7 @@ use JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface;
 use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerInterface;
 
 /**
@@ -25,8 +26,19 @@ class JMSSerializerAdapter implements \CCT\Component\Rest\Serializer\SerializerI
      */
     const DESERIALIZATION = 1;
 
+    /**
+     * @var SerializerInterface|Serializer
+     */
     private $serializer;
+
+    /**
+     * @var SerializationContextFactoryInterface
+     */
     private $serializationContextFactory;
+
+    /**
+     * @var DeserializationContextFactoryInterface
+     */
     private $deserializationContextFactory;
 
     public function __construct(
@@ -109,5 +121,38 @@ class JMSSerializerAdapter implements \CCT\Component\Rest\Serializer\SerializerI
         }
 
         return $jmsContext;
+    }
+
+    /**
+     * Converts objects to an array structure.
+     *
+     * This is useful when the data needs to be passed on to other methods which expect array data.
+     *
+     * @param mixed $data anything that converts to an array, typically an object or an array of objects
+     * @param ContextInterface|null $context
+     *
+     * @return array
+     */
+    public function toArray($data, ContextInterface $context = null)
+    {
+        $context = $this->convertContext($context, self::SERIALIZATION);
+
+        $this->serializer->toArray($data, $context);
+    }
+
+    /**
+     * Restores objects from an array structure.
+     *
+     * @param array $data
+     * @param string $type
+     * @param ContextInterface|null $context
+     *
+     * @return mixed this returns whatever the passed type is, typically an object or an array of objects
+     */
+    public function fromArray(array $data, $type, ContextInterface $context = null)
+    {
+        $context = $this->convertContext($context, self::DESERIALIZATION);
+
+        $this->serializer->fromArray($data, $context);
     }
 }

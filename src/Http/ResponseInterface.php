@@ -27,4 +27,18 @@ interface ResponseInterface
      * @return void
      */
     public function setData($data);
+
+    /**
+     * Is response successful?
+     *
+     * @return bool
+     */
+    public function isSuccessful(): bool;
+
+    /**
+     * Gets the current response content.
+     *
+     * @return string Content
+     */
+    public function getContent();
 }

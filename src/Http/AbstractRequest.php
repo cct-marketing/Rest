@@ -238,7 +238,7 @@ abstract class AbstractRequest implements RequestInterface
      * into an array properly handled by the JMSSerializer
      * and for the acceptance of Kong API.
      *
-     * @param array $formData
+     * @param array|object $formData
      *
      * @return array
      */

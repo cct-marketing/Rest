@@ -129,7 +129,7 @@ class SymfonySerializerBuilder implements SerializerBuilderInterface
     public function addMetadataDir($dir)
     {
         if (!is_dir($dir)) {
-            throw new InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
+            throw new \InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
         }
 
         return $this;

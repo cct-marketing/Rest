@@ -1,5 +1,6 @@
 # REST API Component
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/cct-marketing/Rest/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/cct-marketing/Rest/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/cct-marketing/rest/v/stable)](https://packagist.org/packages/cct-marketing/rest)
 [![Total Downloads](https://poser.pugx.org/cct-marketing/rest/downloads)](https://packagist.org/packages/cct-marketing/rest)
 [![Latest Unstable Version](https://poser.pugx.org/cct-marketing/rest/v/unstable)](https://packagist.org/packages/cct-marketing/rest)

@@ -10,7 +10,7 @@ use CCT\Component\Rest\Serializer\SerializerInterface;
 abstract class AbstractSerializerTransformer implements TransformerInterface
 {
     /**
-     * @var Serializer
+     * @var SerializerInterface
      */
     protected $serializer;
 
@@ -20,7 +20,7 @@ abstract class AbstractSerializerTransformer implements TransformerInterface
     protected $class;
 
     /**
-     * @var SerializationContext|null
+     * @var ContextInterface|null
      */
     protected $context;
 

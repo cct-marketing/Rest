@@ -26,4 +26,28 @@ interface SerializerInterface
      * @return object|array|scalar
      */
     public function deserialize($data, $type, $format, ContextInterface $context = null);
+
+    /**
+     * Converts objects to an array structure.
+     *
+     * This is useful when the data needs to be passed on to other methods which expect array data.
+     *
+     * @param mixed $data anything that converts to an array, typically an object or an array of objects
+     * @param ContextInterface|null $context
+     *
+     * @return array
+     */
+    public function toArray($data, ContextInterface $context = null);
+
+    /**
+     * Restores objects from an array structure.
+     *
+     * @param array $data
+     * @param string $type
+     * @param ContextInterface|null $context
+     *
+     * @return mixed this returns whatever the passed type is, typically an object or an array of objects
+     */
+    public function fromArray(array $data, $type, ContextInterface $context = null);
+
 }

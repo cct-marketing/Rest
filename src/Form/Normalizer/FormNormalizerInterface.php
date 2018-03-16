@@ -9,7 +9,7 @@ interface FormNormalizerInterface
     /**
      * Normalizes the form data to acceptable format for Kong API.
      *
-     * @param array $formData
+     * @param array|object $formData
      *
      * @return array
      */
