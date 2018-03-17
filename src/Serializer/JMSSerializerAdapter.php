@@ -20,7 +20,6 @@ class JMSSerializerAdapter implements SerializerInterface
      * @internal
      */
     const SERIALIZATION = 0;
-
     /**
      * @internal
      */
@@ -66,22 +65,18 @@ class JMSSerializerAdapter implements SerializerInterface
      */
     public function deserialize($data, $type, $format, ContextInterface $context = null)
     {
-        if (null === $context) {
-            $context = $this->deserializationContextFactory->createDeserializationContext();
-        }
-
         $context = $this->convertContext($context, self::DESERIALIZATION);
 
         return $this->serializer->deserialize($data, $type, $format, $context);
     }
 
     /**
-     * @param Context $context
+     * @param ContextInterface|Context $context
      * @param int $direction {@see self} constants
      *
-     * @return JMSContext
+     * @return JMSContext|DeserializationContext|SerializationContext
      */
-    private function convertContext(Context $context = null, $direction)
+    private function convertContext(ContextInterface $context = null, $direction)
     {
         if (self::SERIALIZATION === $direction) {
             $jmsContext = $this->serializationContextFactory
@@ -91,7 +86,7 @@ class JMSSerializerAdapter implements SerializerInterface
             $jmsContext = $this->deserializationContextFactory
                 ? $this->deserializationContextFactory->createDeserializationContext()
                 : DeserializationContext::create();
-            $maxDepth = $context->getMaxDepth(false);
+            $maxDepth = $context->getMaxDepth();
             if (null !== $maxDepth) {
                 for ($i = 0; $i < $maxDepth; ++$i) {
                     $jmsContext->increaseDepth();
@@ -99,10 +94,22 @@ class JMSSerializerAdapter implements SerializerInterface
             }
         }
 
+        return $this->mapContextAttributes($context, $jmsContext);
+    }
+
+    /**
+     * Set jms context attributes from context
+     *
+     * @param ContextInterface|Context $context
+     * @param JMSContext $jmsContext
+     *
+     * @return JMSContext|DeserializationContext|SerializationContext
+     */
+    private function mapContextAttributes(ContextInterface $context, JMSContext $jmsContext)
+    {
         foreach ($context->getAttributes() as $key => $value) {
             $jmsContext->attributes->set($key, $value);
         }
-
         if (null !== $context->getVersion()) {
             $jmsContext->setVersion($context->getVersion());
         }
@@ -137,7 +144,7 @@ class JMSSerializerAdapter implements SerializerInterface
     {
         $context = $this->convertContext($context, self::SERIALIZATION);
 
-        $this->serializer->toArray($data, $context);
+        return $this->serializer->toArray($data, $context);
     }
 
     /**
@@ -153,6 +160,6 @@ class JMSSerializerAdapter implements SerializerInterface
     {
         $context = $this->convertContext($context, self::DESERIALIZATION);
 
-        $this->serializer->fromArray($data, $context);
+        return $this->serializer->fromArray($data, $context);
     }
 }
