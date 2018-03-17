@@ -29,7 +29,7 @@ class SymfonySerializerAdapter implements SerializerInterface
     /**
      * Serializes the given data to the specified output format.
      *
-     * @param object|array|scalar $data
+     * @param object|array $data
      * @param string $format
      * @param ContextInterface|null|Context $context
      *
@@ -59,12 +59,16 @@ class SymfonySerializerAdapter implements SerializerInterface
     }
 
     /**
-     * @param Context $context
+     * @param ContextInterface $context
      *
-     * @return array
+     * @return array|null
      */
-    private function convertContext(Context $context)
+    private function convertContext(ContextInterface $context = null)
     {
+        if (null === $context) {
+            return null;
+        }
+
         $newContext = array();
         foreach ($context->getAttributes() as $key => $value) {
             $newContext[$key] = $value;
@@ -94,7 +98,7 @@ class SymfonySerializerAdapter implements SerializerInterface
     {
         $newContext = $this->convertContext($context);
 
-        $this->serializer->normalize($data, null, $context);
+        return $this->serializer->normalize($data, null, $newContext);
     }
 
     /**
@@ -110,6 +114,6 @@ class SymfonySerializerAdapter implements SerializerInterface
     {
         $newContext = $this->convertContext($context);
 
-        $this->serializer->denormalize($data, $type, null, $newContext);
+        return $this->serializer->denormalize($data, $type, null, $newContext);
     }
 }

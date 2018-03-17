@@ -2,12 +2,14 @@
 
 namespace CCT\Component\Rest\Serializer;
 
+use CCT\Component\Rest\Serializer\Context\Context;
+
 interface SerializerInterface
 {
     /**
      * Serializes the given data to the specified output format.
      *
-     * @param object|array|scalar $data
+     * @param object|array $data
      * @param string $format
      * @param ContextInterface|Context $context
      *
@@ -23,7 +25,7 @@ interface SerializerInterface
      * @param string $format
      * @param ContextInterface|Context $context
      *
-     * @return object|array|scalar
+     * @return object|array
      */
     public function deserialize($data, $type, $format, ContextInterface $context = null);
 
@@ -49,5 +51,4 @@ interface SerializerInterface
      * @return mixed this returns whatever the passed type is, typically an object or an array of objects
      */
     public function fromArray(array $data, $type, ContextInterface $context = null);
-
 }

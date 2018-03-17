@@ -6,7 +6,6 @@ namespace CCT\Component\Rest\Form\Normalizer;
 
 use CCT\Component\Rest\Serializer\ContextInterface;
 use CCT\Component\Rest\Serializer\SerializerInterface;
-use JMS\Serializer\Serializer;
 
 class DefaultFormNormalizer implements FormNormalizerInterface
 {
