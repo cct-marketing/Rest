@@ -161,12 +161,8 @@ abstract class AbstractRequest implements RequestInterface
     private function sendRequest($method, string $uri, $formData = [])
     {
         $responseRef = $this->createResponseReflectionInstance();
-        $baseUri = $this->client->getConfig('base_uri');
 
-        // todo: review
-        $uri = ($baseUri instanceof Uri && $baseUri->getPath())
-            ? rtrim($baseUri->getPath(), '/') . '/' . ltrim($uri, '/')
-            : $uri;
+        $uri = $this->formatUri($uri);
 
         try {
             $psrResponse = $this->client->request($method, $uri, $formData);
@@ -191,6 +187,21 @@ abstract class AbstractRequest implements RequestInterface
         }
 
         return $response;
+    }
+
+    /**
+     * @param string $uri
+     *
+     * @return string
+     */
+    protected function formatUri(string $uri): string
+    {
+        $baseUri = $this->client->getConfig('base_uri');
+
+        // todo: review
+        return ($baseUri instanceof Uri && $baseUri->getPath())
+            ? rtrim($baseUri->getPath(), '/') . '/' . ltrim($uri, '/')
+            : $uri;
     }
 
     /**
@@ -225,6 +236,7 @@ abstract class AbstractRequest implements RequestInterface
         foreach ($this->config->get(Config::RESPONSE_TRANSFORMERS, []) as $transformer) {
             if ($transformer instanceof TransformerInterface && $transformer->supports($data)) {
                 $transformer->transform($data);
+                continue;
             }
 
             if ($transformer instanceof \Closure) {
@@ -247,10 +259,8 @@ abstract class AbstractRequest implements RequestInterface
         if (empty($formData)) {
             return $formData;
         }
-        $defaultFormNormalizer = new DefaultFormNormalizer(
-            $this->serializer,
-            $this->config->get('serialization_context')
-        );
+
+        $defaultFormNormalizer = $this->createDefaultFormNormalizer();
 
         $formNormalizer = $this->config->get(Config::FORM_NORMALIZER, $defaultFormNormalizer);
         if (!$formNormalizer instanceof FormNormalizerInterface) {
@@ -264,6 +274,19 @@ abstract class AbstractRequest implements RequestInterface
         }
 
         return $formParams;
+    }
+
+    /**
+     * Create default form normalizer
+     *
+     * @return FormNormalizerInterface
+     */
+    protected function createDefaultFormNormalizer(): FormNormalizerInterface
+    {
+        return new DefaultFormNormalizer(
+            $this->serializer,
+            $this->config->get('serialization_context')
+        );
     }
 
     /**
