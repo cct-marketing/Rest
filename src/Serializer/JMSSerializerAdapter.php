@@ -125,10 +125,6 @@ class JMSSerializerAdapter implements SerializerInterface
      */
     private function mapContextAttributes(ContextInterface $context, JMSContext $jmsContext)
     {
-        if ($jmsContext instanceof DeserializationContext) {
-            $this->mapMaxDepth($context, $jmsContext);
-        }
-
         foreach ($context->getAttributes() as $key => $value) {
             $jmsContext->attributes->set($key, $value);
         }

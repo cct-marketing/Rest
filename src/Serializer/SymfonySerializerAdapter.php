@@ -4,7 +4,6 @@ namespace CCT\Component\Rest\Serializer;
 
 use CCT\Component\Rest\Serializer\Context\Context;
 use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\SerializerInterface as SymfonySerializerInterface;
 
 /**
  * Adapter to plug the Symfony serializer into the FOSRestBundle Serializer API.
@@ -12,16 +11,16 @@ use Symfony\Component\Serializer\SerializerInterface as SymfonySerializerInterfa
 class SymfonySerializerAdapter implements SerializerInterface
 {
     /**
-     * @var SymfonySerializerInterface|Serializer
+     * @var Serializer
      */
     private $serializer;
 
     /**
      * SymfonySerializerAdapter constructor.
      *
-     * @param SymfonySerializerInterface $serializer
+     * @param Serializer $serializer
      */
-    public function __construct(SymfonySerializerInterface $serializer)
+    public function __construct(Serializer $serializer)
     {
         $this->serializer = $serializer;
     }
@@ -38,7 +37,9 @@ class SymfonySerializerAdapter implements SerializerInterface
     public function serialize($data, $format, ContextInterface $context = null)
     {
         $newContext = $this->convertContext($context);
-        $newContext['serializeNull'] = $context->getSerializeNull();
+        if (null !== $context) {
+            $newContext['serializeNull'] = $context->getSerializeNull();
+        }
 
         return $this->serializer->serialize($data, $format, $newContext);
     }
