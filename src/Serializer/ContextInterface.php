@@ -128,4 +128,12 @@ interface ContextInterface
      * @param ExclusionStrategyInterface $exclusionStrategy
      */
     public function addExclusionStrategy(ExclusionStrategyInterface $exclusionStrategy);
+
+    /**
+     * Gets the normalization max depth.
+     *
+     * @return int|null
+     *
+     */
+    public function getMaxDepth();
 }

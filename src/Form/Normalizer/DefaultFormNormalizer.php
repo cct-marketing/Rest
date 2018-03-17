@@ -11,7 +11,7 @@ use JMS\Serializer\Serializer;
 class DefaultFormNormalizer implements FormNormalizerInterface
 {
     /**
-     * @var Serializer|SerializerInterface
+     * @var SerializerInterface
      */
     protected $serializer;
 
