@@ -9,7 +9,6 @@ use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
-use JMS\Serializer\SerializerInterface as JMSSerializerInterface;
 
 /**
  * Adapter to plug the JMS serializer into the FOSRestBundle Serializer API.
@@ -17,16 +16,7 @@ use JMS\Serializer\SerializerInterface as JMSSerializerInterface;
 class JMSSerializerAdapter implements SerializerInterface
 {
     /**
-     * @internal
-     */
-    const SERIALIZATION = 0;
-    /**
-     * @internal
-     */
-    const DESERIALIZATION = 1;
-
-    /**
-     * @var JMSSerializerInterface|Serializer
+     * @var Serializer
      */
     private $serializer;
 
@@ -41,7 +31,7 @@ class JMSSerializerAdapter implements SerializerInterface
     private $deserializationContextFactory;
 
     public function __construct(
-        JMSSerializerInterface $serializer,
+        Serializer $serializer,
         SerializationContextFactoryInterface $serializationContextFactory = null,
         DeserializationContextFactoryInterface $deserializationContextFactory = null
     ) {
@@ -55,7 +45,7 @@ class JMSSerializerAdapter implements SerializerInterface
      */
     public function serialize($data, $format, ContextInterface $context = null)
     {
-        $context = $this->convertContext($context, self::SERIALIZATION);
+        $context = $this->convertSerializationContext($context);
 
         return $this->serializer->serialize($data, $format, $context);
     }
@@ -65,30 +55,47 @@ class JMSSerializerAdapter implements SerializerInterface
      */
     public function deserialize($data, $type, $format, ContextInterface $context = null)
     {
-        $context = $this->convertContext($context, self::DESERIALIZATION);
+        $context = $this->convertDeserializationContext($context);
 
         return $this->serializer->deserialize($data, $type, $format, $context);
     }
 
     /**
      * @param ContextInterface|Context $context
-     * @param int $direction {@see self} constants
      *
-     * @return JMSContext|DeserializationContext|SerializationContext
+     * @return JMSContext|SerializationContext
      */
-    private function convertContext(ContextInterface $context = null, $direction = self::SERIALIZATION)
+    private function convertSerializationContext(ContextInterface $context = null)
     {
         if (null === $context) {
             return null;
         }
 
-        $jmsContext = self::SERIALIZATION === $direction
-            ? $this->createSerializationContext()
-            : $this->createDeserializationContext();
-
-        return $this->mapContextAttributes($context, $jmsContext);
+        return $this->mapContextAttributes($context, $this->createSerializationContext());
     }
 
+    /**
+     * @param ContextInterface|Context $context
+     *
+     * @return JMSContext|DeserializationContext
+     */
+    private function convertDeserializationContext(ContextInterface $context = null)
+    {
+        if (null === $context) {
+            return null;
+        }
+        $deserializationContext = $this->createDeserializationContext();
+
+        $this->mapMaxDepth($context, $deserializationContext);
+
+        return $this->mapContextAttributes($context, $deserializationContext);
+    }
+
+    /**
+     * Create JMS serialization context
+     *
+     * @return SerializationContext
+     */
     private function createSerializationContext()
     {
         return $this->serializationContextFactory
@@ -96,9 +103,14 @@ class JMSSerializerAdapter implements SerializerInterface
             : SerializationContext::create();
     }
 
+    /**
+     * Create JMS deserialization context
+     *
+     * @return DeserializationContext
+     */
     private function createDeserializationContext()
     {
-        return $jmsContext = $this->deserializationContextFactory
+        return $this->deserializationContextFactory
             ? $this->deserializationContextFactory->createDeserializationContext()
             : DeserializationContext::create();
     }
@@ -113,8 +125,10 @@ class JMSSerializerAdapter implements SerializerInterface
      */
     private function mapContextAttributes(ContextInterface $context, JMSContext $jmsContext)
     {
+        if ($jmsContext instanceof DeserializationContext) {
+            $this->mapMaxDepth($context, $jmsContext);
+        }
 
-        $this->mapMaxDepth($context, $jmsContext);
         foreach ($context->getAttributes() as $key => $value) {
             $jmsContext->attributes->set($key, $value);
         }
@@ -140,14 +154,10 @@ class JMSSerializerAdapter implements SerializerInterface
 
     /**
      * @param ContextInterface $context
-     * @param JMSContext|DeserializationContext|SerializationContext $jmsContext
+     * @param DeserializationContext $jmsContext
      */
-    private function mapMaxDepth(ContextInterface $context, JMSContext $jmsContext)
+    private function mapMaxDepth(ContextInterface $context, DeserializationContext $jmsContext)
     {
-        if ($jmsContext instanceof DeserializationContext) {
-            return;
-        }
-
         $maxDepth = $context->getMaxDepth();
         if (null === $maxDepth) {
             return;
@@ -170,7 +180,7 @@ class JMSSerializerAdapter implements SerializerInterface
      */
     public function toArray($data, ContextInterface $context = null)
     {
-        $context = $this->convertContext($context, self::SERIALIZATION);
+        $context = $this->convertSerializationContext($context);
 
         return $this->serializer->toArray($data, $context);
     }
@@ -186,7 +196,7 @@ class JMSSerializerAdapter implements SerializerInterface
      */
     public function fromArray(array $data, $type, ContextInterface $context = null)
     {
-        $context = $this->convertContext($context, self::DESERIALIZATION);
+        $context = $this->convertDeserializationContext($context);
 
         return $this->serializer->fromArray($data, $context);
     }
