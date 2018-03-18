@@ -128,22 +128,16 @@ class JMSSerializerAdapter implements SerializerInterface
         foreach ($context->getAttributes() as $key => $value) {
             $jmsContext->attributes->set($key, $value);
         }
-        if (null !== $context->getVersion()) {
-            $jmsContext->setVersion($context->getVersion());
-        }
-        if (null !== $context->getGroups()) {
-            $jmsContext->setGroups($context->getGroups());
-        }
-        if (null !== $context->isMaxDepthEnabled()) {
-            $jmsContext->enableMaxDepthChecks();
-        }
-        if (null !== $context->getSerializeNull()) {
-            $jmsContext->setSerializeNull($context->getSerializeNull());
-        }
 
-        foreach ($context->getExclusionStrategies() as $strategy) {
-            $jmsContext->addExclusionStrategy($strategy);
-        }
+        $this->mapVersion($context, $jmsContext);
+
+        $this->mapGroups($context, $jmsContext);
+
+        $this->mapMaxDepthEnabled($context, $jmsContext);
+
+        $this->mapSerializeNull($context, $jmsContext);
+
+        $this->mapExclusionStrategies($context, $jmsContext);
 
         return $jmsContext;
     }
@@ -161,6 +155,69 @@ class JMSSerializerAdapter implements SerializerInterface
 
         for ($i = 0; $i < $maxDepth; ++$i) {
             $jmsContext->increaseDepth();
+        }
+    }
+
+    /**
+     * @param ContextInterface $context
+     * @param JMSContext $jmsContext
+     */
+    private function mapVersion(ContextInterface $context, JMSContext $jmsContext)
+    {
+        if (null === $context->getVersion()) {
+            return;
+        }
+
+        $jmsContext->setVersion($context->getVersion());
+    }
+
+    /**
+     * @param ContextInterface $context
+     * @param JMSContext $jmsContext
+     */
+    private function mapGroups(ContextInterface $context, JMSContext $jmsContext)
+    {
+        if (null === $context->getGroups()) {
+            return;
+        }
+
+        $jmsContext->setGroups($context->getGroups());
+    }
+
+    /**
+     * @param ContextInterface $context
+     * @param JMSContext $jmsContext
+     */
+    private function mapMaxDepthEnabled(ContextInterface $context, JMSContext $jmsContext)
+    {
+        if (null === $context->isMaxDepthEnabled()) {
+            return;
+        }
+
+        $jmsContext->enableMaxDepthChecks();
+    }
+
+    /**
+     * @param ContextInterface $context
+     * @param JMSContext $jmsContext
+     */
+    private function mapSerializeNull(ContextInterface $context, JMSContext $jmsContext)
+    {
+        if (null === $context->getSerializeNull()) {
+            return;
+        }
+
+        $jmsContext->setSerializeNull($context->getSerializeNull());
+    }
+
+    /**
+     * @param ContextInterface $context
+     * @param JMSContext $jmsContext
+     */
+    private function mapExclusionStrategies(ContextInterface $context, JMSContext $jmsContext)
+    {
+        foreach ($context->getExclusionStrategies() as $strategy) {
+            $jmsContext->addExclusionStrategy($strategy);
         }
     }
 
