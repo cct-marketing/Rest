@@ -53,24 +53,47 @@ class DeserializeExtraFieldsSubscriber implements EventSubscriberInterface
                 continue;
             }
 
-            $subscribers[] = [
-                'event' => 'serializer.pre_deserialize',
-                'method' => 'onPreDeserialize',
-                'class' => $class,
-                'format' => 'json',
-                'priority' => 0,
-            ];
-
-            $subscribers[] = [
-                'event' => 'serializer.post_deserialize',
-                'method' => 'onPostDeserialize',
-                'class' => $class,
-                'format' => 'json',
-                'priority' => 0,
-            ];
+            $subscribers[] = self::createPreDeserializeSubscriber($class);
+            $subscribers[] = self::createPostDeserializeSubscriber($class);
         }
 
         return $subscribers;
+    }
+
+    /**
+     * Create pre deserialize subscriber
+     *
+     * @param $class
+     *
+     * @return array
+     */
+    protected static function createPreDeserializeSubscriber($class)
+    {
+        return [
+            'event' => 'serializer.pre_deserialize',
+            'method' => 'onPreDeserialize',
+            'class' => $class,
+            'format' => 'json',
+            'priority' => 0,
+        ];
+    }
+
+    /**
+     * Create post deserialize subscriber
+     *
+     * @param $class
+     *
+     * @return array
+     */
+    protected static function createPostDeserializeSubscriber($class)
+    {
+        return [
+            'event' => 'serializer.post_deserialize',
+            'method' => 'onPostDeserialize',
+            'class' => $class,
+            'format' => 'json',
+            'priority' => 0,
+        ];
     }
 
     /**
@@ -110,24 +133,51 @@ class DeserializeExtraFieldsSubscriber implements EventSubscriberInterface
      */
     protected function populateFields($object)
     {
-        $config = static::$config;
-        $objectClass = get_class($object);
 
-        if (!$object instanceof ExtraFieldsInterface
-            || !$object->getExtraFields() instanceof CollectionInterface
-            || !isset($config[$objectClass])
-        ) {
+        if (!$this->isObjectAllowed($object)) {
             return;
         }
 
-        foreach ($this->data as $property => $value) {
-            $ignoreFields = $config[$objectClass];
+        $ignoreFields = $this->getIgnoreFields($object);
 
+        foreach ($this->data as $property => $value) {
             if (in_array($property, $ignoreFields)) {
                 continue;
             }
 
             $object->getExtraFields()->set($property, $value);
         }
+    }
+
+    /**
+     * Is object allowed
+     *
+     * @param object $object
+     *
+     * @return bool
+     */
+    protected function isObjectAllowed($object)
+    {
+        $config = static::$config;
+        $objectClass = get_class($object);
+
+        return ($object instanceof ExtraFieldsInterface &&
+            $object->getExtraFields() instanceof CollectionInterface &&
+            isset($config[$objectClass]));
+    }
+
+    /**
+     * Get ignore fields for object
+     *
+     * @param object $object
+     *
+     * @return array
+     */
+    protected function getIgnoreFields($object)
+    {
+        $config = static::$config;
+        $objectClass = get_class($object);
+
+        return $config[$objectClass];
     }
 }

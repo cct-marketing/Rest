@@ -234,14 +234,25 @@ abstract class AbstractRequest implements RequestInterface
     protected function applyResponseTransformers(ResponseInterface $data)
     {
         foreach ($this->config->get(Config::RESPONSE_TRANSFORMERS, []) as $transformer) {
-            if ($transformer instanceof TransformerInterface && $transformer->supports($data)) {
-                $transformer->transform($data);
-                continue;
-            }
+            $this->applyResponseTransformer($transformer, $data);
+        }
+    }
 
-            if ($transformer instanceof \Closure) {
-                $transformer($data);
-            }
+    /**
+     * Applied single response transformer
+     *
+     * @param TransformerInterface|\Closure $transformer
+     * @param ResponseInterface $data
+     */
+    protected function applyResponseTransformer($transformer, ResponseInterface $data)
+    {
+        if ($transformer instanceof TransformerInterface && $transformer->supports($data)) {
+            $transformer->transform($data);
+            return;
+        }
+
+        if ($transformer instanceof \Closure) {
+            $transformer($data);
         }
     }
 

@@ -41,9 +41,7 @@ class Response extends BaseResponse implements ResponseInterface
             return null;
         }
 
-        if (false === strpos($this->headers->get('Content-Type'), 'json')) {
-            throw new InvalidParameterException('The content returned must be in a JSON format.');
-        }
+        $this->checkContentType();
 
         $data = @json_decode($content, true);
         if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
@@ -51,5 +49,15 @@ class Response extends BaseResponse implements ResponseInterface
         }
 
         return $data;
+    }
+
+    /**
+     * Check if content type is json
+     */
+    protected function checkContentType()
+    {
+        if (false === strpos($this->headers->get('Content-Type'), 'json')) {
+            throw new InvalidParameterException('The content returned must be in a JSON format.');
+        }
     }
 }
