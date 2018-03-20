@@ -133,10 +133,38 @@ class JMSSerializerBuilder implements SerializerBuilderInterface
     {
         $this->jmsSerializerBuilder->setDebug($this->config->get('debug', false));
 
+        $this
+            ->applyMetadataDirectory()
+            ->applyEventSubscribers()
+            ->applySerializationHandlers()
+            ->applyObjectConstructor();
+
+        $serializer = $this->jmsSerializerBuilder->build();
+
+        return new JMSSerializerAdapter($serializer);
+    }
+
+    /**
+     * Apply Metadata Directories
+     *
+     * @return $this
+     */
+    protected function applyMetadataDirectory()
+    {
         foreach ($this->config->get(Config::METADATA_DIRS, []) as $metadataDir) {
             $this->jmsSerializerBuilder->addMetadataDir($metadataDir['dir'], $metadataDir['namespacePrefix']);
         }
 
+        return $this;
+    }
+
+    /**
+     * Apply event subscribers
+     *
+     * @return $this
+     */
+    protected function applyEventSubscribers()
+    {
         $eventSubscribers = $this->config->get(Config::EVENT_SUBSCRIBERS, []);
         $this->jmsSerializerBuilder->configureListeners(function (EventDispatcher $dispatcher) use ($eventSubscribers) {
             foreach ($eventSubscribers as $eventSubscriber) {
@@ -144,6 +172,16 @@ class JMSSerializerBuilder implements SerializerBuilderInterface
             }
         });
 
+        return $this;
+    }
+
+    /**
+     * Apply serialization handlers
+     *
+     * @return $this
+     */
+    protected function applySerializationHandlers()
+    {
         $serializationHandlers = $this->config->get(Config::SERIALIZATION_HANDLERS, []);
         $this->jmsSerializerBuilder->configureHandlers(
             function (HandlerRegistry $handlerRegistry) use ($serializationHandlers) {
@@ -153,13 +191,21 @@ class JMSSerializerBuilder implements SerializerBuilderInterface
             }
         );
 
+        return $this;
+    }
+
+    /**
+     * Apply object constructor
+     *
+     * @return $this
+     */
+    protected function applyObjectConstructor()
+    {
         $objectConstructor = $this->config->get(Config::OBJECT_CONSTRUCTOR, null);
         if (null !== $objectConstructor) {
             $this->jmsSerializerBuilder->setObjectConstructor($objectConstructor);
         }
 
-        $serializer = $this->jmsSerializerBuilder->build();
-
-        return new JMSSerializerAdapter($serializer);
+        return $this;
     }
 }
