@@ -41,11 +41,22 @@ class CollectionObjectTransformer extends AbstractSerializerTransformer
 
         return (
             $response->isSuccessful()
-            && is_array($data)
-            && !empty($data)
+            && $this->isArrayAndNotEmpty($data)
             && $this->mappingKeysExist($data)
             && $this->isSequential($this->map($data))
         );
+    }
+
+    /**
+     * Check if $data is an array and not empty
+     *
+     * @param mixed $data
+     *
+     * @return bool
+     */
+    protected function isArrayAndNotEmpty($data)
+    {
+        return  is_array($data) && !empty($data);
     }
 
     /**

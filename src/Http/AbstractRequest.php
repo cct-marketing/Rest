@@ -284,13 +284,7 @@ abstract class AbstractRequest implements RequestInterface
             return [];
         }
 
-        $formParams = $formNormalizer->normalize($formData);
-
-        if (!empty($formParams) && !isset($formParams['form_params'])) {
-            $formParams = ['form_params' => $formParams];
-        }
-
-        return $formParams;
+        return $formNormalizer->normalize($formData);
     }
 
     /**
