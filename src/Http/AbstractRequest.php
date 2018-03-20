@@ -19,6 +19,7 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\ResponseInterface as BaseResponseInterface;
 
 abstract class AbstractRequest implements RequestInterface
 {
@@ -160,33 +161,38 @@ abstract class AbstractRequest implements RequestInterface
      */
     private function sendRequest($method, string $uri, $formData = [])
     {
-        $responseRef = $this->createResponseReflectionInstance();
-
         $uri = $this->formatUri($uri);
 
         try {
-            $psrResponse = $this->client->request($method, $uri, $formData);
-
-            $response = $responseRef->newInstance(
-                $psrResponse->getBody()->getContents(),
-                $psrResponse->getStatusCode(),
-                $psrResponse->getHeaders()
-            );
+            $response = $this->client->request($method, $uri, $formData);
         } catch (ConnectException $e) {
             throw new ServiceUnavailableException($e->getRequest(), $e->getMessage());
         } catch (RequestException $e) {
             if (null === $e->getResponse()->getBody()) {
                 throw $e;
             }
-
-            $response = $responseRef->newInstance(
-                $e->getResponse()->getBody()->getContents(),
-                $e->getResponse()->getStatusCode(),
-                $e->getResponse()->getHeaders()
-            );
+            $response = $e->getResponse();
         }
 
-        return $response;
+        return  $this->createResponseRefFromResponse($response);
+    }
+
+    /**
+     * Create Response reflection from a response
+     *
+     * @param BaseResponseInterface $response
+     *
+     * @return object
+     */
+    protected function createResponseRefFromResponse(BaseResponseInterface $response)
+    {
+        $responseRef = $this->createResponseReflectionInstance();
+
+        return $responseRef->newInstance(
+            $response->getBody()->getContents(),
+            $response->getStatusCode(),
+            $response->getHeaders()
+        );
     }
 
     /**
