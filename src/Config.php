@@ -26,6 +26,8 @@ class Config extends ArrayCollection
 
     const RESPONSE_TRANSFORMERS = 'api.config.response_transformers';
 
+    const REQUEST_TRANSFORMERS = 'api.config.request_transformers';
+
     const USE_DEFAULT_RESPONSE_TRANSFORMERS = 'api.config.use_default_response_transformers';
 
     const RESPONSE_CLASS = 'api.config.response.class';

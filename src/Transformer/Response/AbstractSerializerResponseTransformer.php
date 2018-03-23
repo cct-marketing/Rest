@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace CCT\Component\Rest\Transformer;
+namespace CCT\Component\Rest\Transformer\Response;
 
 use CCT\Component\Rest\Serializer\ContextInterface;
 use CCT\Component\Rest\Serializer\SerializerInterface;
 
-abstract class AbstractSerializerTransformer implements TransformerInterface
+abstract class AbstractSerializerResponseTransformer implements ResponseTransformerInterface
 {
     /**
      * @var SerializerInterface

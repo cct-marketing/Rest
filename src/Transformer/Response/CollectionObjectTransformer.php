@@ -2,11 +2,10 @@
 
 namespace CCT\Component\Rest\Transformer\Response;
 
-use CCT\Component\Rest\Transformer\AbstractSerializerTransformer;
 use CCT\Component\Rest\Http\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-class CollectionObjectTransformer extends AbstractSerializerTransformer
+class CollectionObjectTransformer extends AbstractSerializerResponseTransformer
 {
     protected $mappingKeys = null;
 

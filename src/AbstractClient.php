@@ -7,8 +7,12 @@ namespace CCT\Component\Rest;
 use Assert\Assert;
 use CCT\Component\Rest\Exception\InvalidParameterException;
 use CCT\Component\Rest\Http\RequestInterface;
+use CCT\Component\Rest\Http\SerializerRequestInterface;
+use CCT\Component\Rest\Http\Transform\RequestTransform;
+use CCT\Component\Rest\Http\Transform\ResponseTransform;
 use CCT\Component\Rest\Serializer\Context\Context;
 use CCT\Component\Rest\Serializer\JMSSerializerBuilder;
+use CCT\Component\Rest\Transformer\Request\FormObjectTransformer;
 use CCT\Component\Rest\Transformer\Response\CollectionObjectTransformer;
 use CCT\Component\Rest\Transformer\Response\ObjectTransformer;
 use GuzzleHttp\Client as GuzzleClient;
@@ -116,10 +120,18 @@ abstract class AbstractClient
             ));
         }
 
+        if (!$reflectionClass->implementsInterface(SerializerRequestInterface::class)) {
+            return $reflectionClass->newInstance(
+                $this->client
+            );
+        }
+
         return $reflectionClass->newInstance(
             $this->client,
             $config,
-            $serializer
+            $serializer,
+            $this->createRequestTransform($config),
+            $this->createResponseTransform($config)
         );
     }
 
@@ -139,5 +151,26 @@ abstract class AbstractClient
             new ObjectTransformer($serializer, $modelClass, new Context()),
             new CollectionObjectTransformer($serializer, $modelClass, new Context())
         ]);
+    }
+
+    protected function applyDefaultRequestTransformers(Config $config, SerializerInterface $serializer)
+    {
+        $config->set(Config::REQUEST_TRANSFORMERS, [
+            new FormObjectTransformer($serializer, new Context()),
+        ]);
+    }
+
+    protected function createRequestTransform(Config $config): ?RequestTransform
+    {
+        return new RequestTransform(
+            $config->get(Config::REQUEST_TRANSFORMERS, [])
+        );
+    }
+
+    protected function createResponseTransform(Config $config): ?ResponseTransform
+    {
+        return new ResponseTransform(
+            $config->get(Config::RESPONSE_TRANSFORMERS, [])
+        );
     }
 }

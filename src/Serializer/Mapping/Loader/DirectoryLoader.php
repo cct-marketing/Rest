@@ -32,7 +32,7 @@ class DirectoryLoader
     }
 
     /**
-     * Scan directory for files matching extention type
+     * Scan directory for files matching extension type
      *
      * @param string $dir
      * @param string $type

@@ -1,11 +1,13 @@
 <?php
 
-namespace CCT\Component\Rest\Transformer;
+declare(strict_types=1);
+
+namespace CCT\Component\Rest\Http\Transform;
 
 use CCT\Component\Rest\Http\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-interface TransformerInterface
+interface ResponseTransformInterface
 {
     /**
      * Executes the transformation of the response.
@@ -15,13 +17,4 @@ interface TransformerInterface
      * @return void
      */
     public function transform(ResponseInterface $response);
-
-    /**
-     * Checks if the response sent is supported to executes the transformation.
-     *
-     * @param ResponseInterface|Response $response
-     *
-     * @return bool
-     */
-    public function supports(ResponseInterface $response): bool;
 }

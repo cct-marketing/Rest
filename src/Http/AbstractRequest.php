@@ -4,22 +4,14 @@ declare(strict_types=1);
 
 namespace CCT\Component\Rest\Http;
 
-use Assert\Assert;
-use CCT\Component\Rest\Config;
 use CCT\Component\Rest\Exception\InvalidParameterException;
 use CCT\Component\Rest\Exception\ServiceUnavailableException;
-use CCT\Component\Rest\Form\Normalizer\DefaultFormNormalizer;
-use CCT\Component\Rest\Form\Normalizer\FormNormalizerInterface;
 use CCT\Component\Rest\Http\Definition\QueryParams;
 use CCT\Component\Rest\Http\Definition\RequestHeaders;
-use CCT\Component\Rest\Serializer\Context\Context;
-use CCT\Component\Rest\Serializer\SerializerInterface;
-use CCT\Component\Rest\Transformer\TransformerInterface;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Uri;
-use Psr\Http\Message\ResponseInterface as BaseResponseInterface;
+use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 
 abstract class AbstractRequest implements RequestInterface
 {
@@ -27,16 +19,6 @@ abstract class AbstractRequest implements RequestInterface
      * @var GuzzleClient
      */
     protected $client;
-
-    /**
-     * @var SerializerInterface
-     */
-    protected $serializer;
-
-    /**
-     * @var Config
-     */
-    protected $config;
 
     /**
      * Request headers
@@ -47,25 +29,10 @@ abstract class AbstractRequest implements RequestInterface
 
     /**
      * @param GuzzleClient $client
-     * @param SerializerInterface $serializer
-     * @param Config $config
      */
-    public function __construct(GuzzleClient $client, Config $config, $serializer = null)
+    public function __construct(GuzzleClient $client)
     {
         $this->client = $client;
-        $this->serializer = $serializer;
-        $this->config = $config;
-
-        $this->setUp();
-        $this->validateConfig();
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getUri()
-    {
-        return $this->config->get(Config::URI_PREFIX);
     }
 
     /**
@@ -132,39 +99,46 @@ abstract class AbstractRequest implements RequestInterface
      * @param array|object $formData
      * @param QueryParams|null $queryParams
      *
-     * @return ResponseInterface|\Symfony\Component\HttpFoundation\Response
+     * @return PsrResponseInterface|\Symfony\Component\HttpFoundation\Response
      */
     protected function execute($method, string $uri, $formData = [], QueryParams $queryParams = null)
     {
-        $queryParams = $queryParams ?: new QueryParams();
-        $options = $this->normalizeFormData($formData);
-        $uri = $this->normalizeUri($uri, $queryParams);
+        $options = $this->getRequestOptions($formData);
 
-        $options = array_merge($options, ['headers' => $this->getHeaders()->toArray()]);
+        $queryParams = $queryParams ?: new QueryParams();
+        $uri = $this->addQueryParamsToUri($uri, $queryParams);
 
         $response = $this->sendRequest($method, $uri, $options);
-        $this->applyResponseTransformers($response);
-
-        $this->config->set('serialization_context', []);
 
         return $response;
     }
 
     /**
+     * @param array|object $formData
+     *
+     * @return array
+     */
+    protected function getRequestOptions($formData = [])
+    {
+        return [
+            'form_params' => $formData,
+            'headers' => $this->getHeaders()->toArray()
+        ];
+    }
+
+    /**
      * @param string $method
      * @param string $uri
-     * @param array $formData
+     * @param array $options
      *
      * @throws ServiceUnavailableException
      *
      * @return Response|object
      */
-    private function sendRequest($method, string $uri, $formData = [])
+    protected function sendRequest($method, string $uri, $options = [])
     {
-        $uri = $this->formatUri($uri);
-
         try {
-            $response = $this->client->request($method, $uri, $formData);
+            $response = $this->client->request($method, $uri, $options);
         } catch (ConnectException $e) {
             throw new ServiceUnavailableException($e->getRequest(), $e->getMessage());
         } catch (RequestException $e) {
@@ -174,130 +148,7 @@ abstract class AbstractRequest implements RequestInterface
             $response = $e->getResponse();
         }
 
-        return  $this->createResponseRefFromResponse($response);
-    }
-
-    /**
-     * Create Response reflection from a response
-     *
-     * @param BaseResponseInterface $response
-     *
-     * @return object
-     */
-    protected function createResponseRefFromResponse(BaseResponseInterface $response)
-    {
-        $responseRef = $this->createResponseReflectionInstance();
-
-        return $responseRef->newInstance(
-            $response->getBody()->getContents(),
-            $response->getStatusCode(),
-            $response->getHeaders()
-        );
-    }
-
-    /**
-     * @param string $uri
-     *
-     * @return string
-     */
-    protected function formatUri(string $uri): string
-    {
-        $baseUri = $this->client->getConfig('base_uri');
-
-        // todo: review
-        return ($baseUri instanceof Uri && $baseUri->getPath())
-            ? rtrim($baseUri->getPath(), '/') . '/' . ltrim($uri, '/')
-            : $uri;
-    }
-
-    /**
-     * Appends new parameters to the URI.
-     *
-     * @param string $complement
-     * @param string|null $uri
-     *
-     * @return string
-     */
-    protected function appendToUri(string $complement, ?string $uri = null)
-    {
-        $uri = $uri ?: $this->config->get(Config::URI_PREFIX);
-
-        return sprintf(
-            '%s/%s',
-            rtrim($uri, '/'),
-            ltrim($complement, '/')
-        );
-    }
-
-    /**
-     * It is possible to handle the Response data defining the Config key response_transformers
-     * with an instance of Closure or an instance of TransformerInterface.
-     *
-     * @param ResponseInterface $data
-     *
-     * @return void
-     */
-    protected function applyResponseTransformers(ResponseInterface $data)
-    {
-        foreach ($this->config->get(Config::RESPONSE_TRANSFORMERS, []) as $transformer) {
-            $this->applyResponseTransformer($transformer, $data);
-        }
-    }
-
-    /**
-     * Applied single response transformer
-     *
-     * @param TransformerInterface|\Closure $transformer
-     * @param ResponseInterface $data
-     */
-    protected function applyResponseTransformer($transformer, ResponseInterface $data)
-    {
-        if ($transformer instanceof TransformerInterface && $transformer->supports($data)) {
-            $transformer->transform($data);
-            return;
-        }
-
-        if ($transformer instanceof \Closure) {
-            $transformer($data);
-        }
-    }
-
-    /**
-     * Tries to identify the data object sent, and convert them
-     * into an array properly handled by the JMSSerializer
-     * and for the acceptance of Kong API.
-     *
-     * @param array|object $formData
-     *
-     * @return array
-     */
-    private function normalizeFormData($formData = [])
-    {
-        if (empty($formData)) {
-            return $formData;
-        }
-
-        $defaultFormNormalizer = $this->createDefaultFormNormalizer();
-
-        $formNormalizer = $this->config->get(Config::FORM_NORMALIZER, $defaultFormNormalizer);
-        if (!$formNormalizer instanceof FormNormalizerInterface) {
-            return [];
-        }
-
-        return $formNormalizer->normalize($formData);
-    }
-
-    /**
-     * Create default form normalizer
-     *
-     * @return FormNormalizerInterface
-     */
-    protected function createDefaultFormNormalizer(): FormNormalizerInterface
-    {
-        return new DefaultFormNormalizer(
-            $this->serializer,
-            $this->config->get('serialization_context')
-        );
+        return $response;
     }
 
     /**
@@ -308,7 +159,7 @@ abstract class AbstractRequest implements RequestInterface
      *
      * @return string
      */
-    private function normalizeUri(string $uri, QueryParams $queryParams)
+    protected function addQueryParamsToUri(string $uri, QueryParams $queryParams)
     {
         if (false !== strpos($uri, '?')) {
             throw new InvalidParameterException(sprintf(
@@ -319,76 +170,6 @@ abstract class AbstractRequest implements RequestInterface
         }
 
         return $uri . $queryParams->toString();
-    }
-
-    /**
-     * Sets the Serialization context based in the groups the request should deal with.
-     *
-     * @param array $groups
-     *
-     * @return void
-     */
-    protected function setSerializationContextFor(array $groups = []): void
-    {
-
-        $serializationContext = Context::create()->setGroups($groups);
-
-        $this->config->set('serialization_context', $serializationContext);
-    }
-
-    /**
-     * Creates a Reflection Response class.
-     *
-     * @return \ReflectionClass
-     */
-    private function createResponseReflectionInstance(): \ReflectionClass
-    {
-        $responseClass = $this->config->get(Config::RESPONSE_CLASS, Response::class);
-        $responseRef = new \ReflectionClass($responseClass);
-
-        if (!$responseRef->implementsInterface(ResponseInterface::class)) {
-            throw new InvalidParameterException(sprintf(
-                'The response class must be an implementation of %s',
-                ResponseInterface::class
-            ));
-        }
-
-        return $responseRef;
-    }
-
-    protected function disableFormNormalizer()
-    {
-        $this->config->set(Config::FORM_NORMALIZER, null);
-    }
-
-    /**
-     * Validates if the object has a valid id, otherwise throws an exception.
-     *
-     * @param object $object
-     *
-     * @return void
-     */
-    protected function validateObjectId($object)
-    {
-        if (!method_exists($object, 'getId') || null === $object->getId()) {
-            throw new InvalidParameterException(sprintf(
-                'The object "%s" must have an ID to continue the operation. "%s" given.',
-                get_class($object),
-                gettype($object->getId())
-            ));
-        }
-    }
-
-    /**
-     * Validates the required parameters from Config file.
-     *
-     * @return void
-     */
-    private function validateConfig()
-    {
-        Assert::lazy()
-            ->that($this->config->toArray(), Config::URI_PREFIX)->keyExists(Config::URI_PREFIX)
-            ->verifyNow();
     }
 
     /**
@@ -410,11 +191,4 @@ abstract class AbstractRequest implements RequestInterface
     {
         return $this->headers;
     }
-
-    /**
-     * Initialization of the request.
-     *
-     * @return void
-     */
-    abstract protected function setUp();
 }
