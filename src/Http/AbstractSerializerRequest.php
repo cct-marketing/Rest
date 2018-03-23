@@ -89,7 +89,9 @@ abstract class AbstractSerializerRequest extends AbstractRequest implements Seri
             parent::execute($method, $uri, $formData, $queryParams)
         );
 
-        $this->responseTransform->transform($response);
+        if (null !== $this->responseTransform) {
+            $this->responseTransform->transform($response);
+        }
         $this->config->set('serialization_context', []);
 
         return $response;
@@ -102,8 +104,12 @@ abstract class AbstractSerializerRequest extends AbstractRequest implements Seri
      */
     protected function getRequestOptions($formData = [])
     {
+        if (null !== $this->requestTransform) {
+            $formData = $this->requestTransform->transform($formData);
+        }
+
         return [
-            'form_params' => $this->requestTransform->transform($formData),
+            'form_params' => $formData,
             'headers' => $this->getHeaders()->toArray()
         ];
     }

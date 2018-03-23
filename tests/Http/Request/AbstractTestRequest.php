@@ -6,6 +6,9 @@ namespace CCT\Component\Rest\Tests\Http\Request;
 
 use CCT\Component\Rest\Config;
 use CCT\Component\Rest\Http\AbstractRequest;
+use CCT\Component\Rest\Http\AbstractSerializerRequest;
+use CCT\Component\Rest\Http\Transform\RequestTransformInterface;
+use CCT\Component\Rest\Http\Transform\ResponseTransformInterface;
 use CCT\Component\Rest\Serializer\JMSSerializerBuilder;
 use CCT\Component\Rest\Serializer\SerializerInterface;
 use CCT\Component\Rest\Serializer\SymfonySerializerBuilder;
@@ -137,6 +140,28 @@ abstract class AbstractTestRequest extends TestCase
     protected function createRequest($client, $class, Config $config): AbstractRequest
     {
         $request = new $class($client, $config, $this->getSerializer());
+
+        return $request;
+    }
+
+    /**
+     * @param $client
+     * @param $class
+     * @param Config $config
+     * @param RequestTransformInterface $requestTransform
+     * @param ResponseTransformInterface $responseTransform
+     *
+     * @return AbstractSerializerRequest
+     */
+    protected function createSerializerRequest(
+        $client,
+        $class,
+        Config $config,
+        RequestTransformInterface $requestTransform = null,
+        ResponseTransformInterface $responseTransform = null
+    ): AbstractSerializerRequest {
+
+        $request = new $class($client, $config, $this->getSerializer(), $requestTransform, $responseTransform);
 
         return $request;
     }
