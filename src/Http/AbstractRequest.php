@@ -52,7 +52,7 @@ abstract class AbstractRequest implements RequestInterface
      * @param string $uri
      * @param QueryParams|null $queryParams
      *
-     * @return ResponseInterface|\Symfony\Component\HttpFoundation\Response
+     * @return ResponseInterface
      */
     protected function requestGet($uri, QueryParams $queryParams = null)
     {
@@ -63,7 +63,7 @@ abstract class AbstractRequest implements RequestInterface
      * @param string $uri
      * @param QueryParams|null $queryParams
      *
-     * @return ResponseInterface|\Symfony\Component\HttpFoundation\Response
+     * @return ResponseInterface
      */
     protected function requestDelete($uri, QueryParams $queryParams = null)
     {
@@ -75,7 +75,7 @@ abstract class AbstractRequest implements RequestInterface
      * @param array|object $formData
      * @param QueryParams|null $queryParams
      *
-     * @return ResponseInterface|\Symfony\Component\HttpFoundation\Response
+     * @return ResponseInterface
      */
     protected function requestPost($uri, $formData, QueryParams $queryParams = null)
     {
@@ -87,7 +87,7 @@ abstract class AbstractRequest implements RequestInterface
      * @param array|object $formData
      * @param QueryParams|null $queryParams
      *
-     * @return ResponseInterface|\Symfony\Component\HttpFoundation\Response
+     * @return ResponseInterface
      */
     protected function requestPatch($uri, $formData, QueryParams $queryParams = null)
     {
@@ -99,7 +99,7 @@ abstract class AbstractRequest implements RequestInterface
      * @param array|object $formData
      * @param QueryParams|null $queryParams
      *
-     * @return ResponseInterface|\Symfony\Component\HttpFoundation\Response
+     * @return ResponseInterface
      */
     protected function requestPut($uri, $formData, QueryParams $queryParams = null)
     {
@@ -112,7 +112,7 @@ abstract class AbstractRequest implements RequestInterface
      * @param array|object $formData
      * @param QueryParams|null $queryParams
      *
-     * @return ResponseInterface|\Symfony\Component\HttpFoundation\Response
+     * @return ResponseInterface
      */
     protected function execute($method, string $uri, $formData = [], QueryParams $queryParams = null)
     {

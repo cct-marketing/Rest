@@ -31,7 +31,7 @@ class RequestTransform implements RequestTransformInterface
      * @param array|object $formData
      * @param ContextInterface|null $context
      *
-     * @return array
+     * @return array|object
      */
     public function transform($formData = [], ContextInterface $context = null)
     {
@@ -52,6 +52,8 @@ class RequestTransform implements RequestTransformInterface
      * @param RequestTransformerInterface|\Closure $transformer
      * @param array|object $formData
      * @param ContextInterface|null $context
+     *
+     * @return array|mixed
      */
     protected function applyRequestTransformers($transformer, $formData, ContextInterface $context = null)
     {

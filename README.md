@@ -7,7 +7,7 @@
 [![License](https://poser.pugx.org/cct-marketing/rest/license)](https://packagist.org/packages/cct-marketing/rest)
 
 A REST(Representational State Transfer) library to help rapidly develop RESTful web service SDKs. Supports
-serilization of response and request to objects.
+serialization of response and request to objects.
 
 ## Installation
 
@@ -16,21 +16,21 @@ composer require cct-marketing/rest
 ```
 
 ### Serilizer Libraries (Optional)
-If no serilizer is install all responses will be returned as an array
+If no serializer is install all responses will be returned as an array
 
-**Recommended** [JMS Seriliser](https://github.com/schmittjoh/serializer)
+**Recommended** [JMS Serialiser](https://github.com/schmittjoh/serializer)
 ```bash
 composer require jms/serializer
 ```
 
-**Alternative** [Symfony Seriliser](https://symfony.com/doc/current/components/serializer.html)
+**Alternative** [Symfony Serialiser](https://symfony.com/doc/current/components/serializer.html)
 ```bash
 composer require symfony/serializer
 composer require symfony/property-access
 ```
 
 ## Usage
-To use the library you just need to extend the AbstractClient and AbstractRequest classes
+To use the library you just need to extend the AbstractClient and AbstractSerializerRequest or AbstractRequest classes
 
 
 ```php

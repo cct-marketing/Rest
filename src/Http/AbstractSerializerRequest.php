@@ -34,14 +34,14 @@ abstract class AbstractSerializerRequest extends AbstractRequest implements Seri
      *
      * @param GuzzleClient $client
      * @param Config $config
-     * @param null $serializer
+     * @param SerializerInterface|null $serializer
      * @param RequestTransformInterface $requestTransform
      * @param ResponseTransformInterface $responseTransform
      */
     public function __construct(
         GuzzleClient $client,
         Config $config,
-        $serializer = null,
+        SerializerInterface $serializer = null,
         RequestTransformInterface $requestTransform = null,
         ResponseTransformInterface $responseTransform = null
     ) {
@@ -58,7 +58,7 @@ abstract class AbstractSerializerRequest extends AbstractRequest implements Seri
      * @param array $formData
      * @param QueryParams|null $queryParams
      *
-     * @return ResponseInterface|\Symfony\Component\HttpFoundation\Response
+     * @return ResponseInterface
      */
     protected function execute($method, string $uri, $formData = [], QueryParams $queryParams = null)
     {
