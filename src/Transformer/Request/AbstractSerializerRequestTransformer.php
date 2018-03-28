@@ -17,7 +17,7 @@ abstract class AbstractSerializerRequestTransformer implements RequestTransforme
     /**
      * @var ContextInterface|null
      */
-    protected $serializationContext;
+    protected $context;
 
     /**
      * FormObjectTransformer constructor.
@@ -28,6 +28,6 @@ abstract class AbstractSerializerRequestTransformer implements RequestTransforme
     public function __construct(SerializerInterface $serializer, ContextInterface $context = null)
     {
         $this->serializer = $serializer;
-        $this->serializationContext = $context;
+        $this->context = $context;
     }
 }

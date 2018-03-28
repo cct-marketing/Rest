@@ -10,7 +10,7 @@ class TestClient extends AbstractClient
     /**
      * @return ScrapeRequest
      */
-    public function apiTest(): TestRequest
+    public function apiTest(): TestSerializerRequest
     {
         $config = clone $this->config;
         $modelClass = TestModel::class;
@@ -20,7 +20,7 @@ class TestClient extends AbstractClient
             $this->applyDefaultResponseTransformers($config, $serializer, $modelClass);
         }
 
-        return $this->createRequestInstance(TestRequest::class, $config, null);
+        return $this->createRequestInstance(TestSerializerRequest::class, $config, null);
     }
 
     protected function applyDefaults()

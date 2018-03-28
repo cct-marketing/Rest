@@ -3,3 +3,6 @@ CCT\Component\Rest\Tests\Fixture\TestModel:
     heading:
       type: string
       groups: [read]
+    body:
+      type: string
+      groups: [write]

@@ -9,9 +9,9 @@ use CCT\Component\Rest\Http\Transform\RequestTransform;
 use CCT\Component\Rest\Http\Transform\ResponseTransform;
 use CCT\Component\Rest\Serializer\Context\Context;
 use CCT\Component\Rest\Tests\Fixture\TestModel;
-use CCT\Component\Rest\Tests\Fixture\TestRequest;
+use CCT\Component\Rest\Tests\Fixture\TestSerializerRequest;
 use CCT\Component\Rest\Transformer\Request\FormObjectTransformer;
-use CCT\Component\Rest\Transformer\Response\CollectionObjectTransformer;
+use CCT\Component\Rest\Transformer\Response\ObjectCollectionTransformer;
 use CCT\Component\Rest\Transformer\Response\ObjectTransformer;
 
 class RequestTest extends AbstractTestRequest
@@ -57,7 +57,7 @@ class RequestTest extends AbstractTestRequest
         if (null === $this->getSerializer()) {
             return $this->createSerializerRequest(
                 $client,
-                TestRequest::class,
+                TestSerializerRequest::class,
                 $config,
                 null,
                 null
@@ -75,7 +75,7 @@ class RequestTest extends AbstractTestRequest
             Config::RESPONSE_TRANSFORMERS,
             [
                 new ObjectTransformer($this->getSerializer(), $modelClass, new Context()),
-                new CollectionObjectTransformer($this->getSerializer(), $modelClass, new Context())
+                new ObjectCollectionTransformer($this->getSerializer(), $modelClass, new Context())
             ]
         );
 
@@ -89,7 +89,7 @@ class RequestTest extends AbstractTestRequest
 
         return $this->createSerializerRequest(
             $client,
-            TestRequest::class,
+            TestSerializerRequest::class,
             $config,
             $requestTransform,
             $responseTransform

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace CCT\Component\Rest\Http\Transform;
 
+use CCT\Component\Rest\Serializer\ContextInterface;
+
 interface RequestTransformInterface
 {
     /**
@@ -11,8 +13,9 @@ interface RequestTransformInterface
      * into an array properly
      *
      * @param array|object $formData
+     * @param ContextInterface|null $context
      *
      * @return array
      */
-    public function transform($formData = []);
+    public function transform($formData = [], ContextInterface $context = null);
 }

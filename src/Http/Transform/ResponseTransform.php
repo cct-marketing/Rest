@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CCT\Component\Rest\Http\Transform;
 
 use CCT\Component\Rest\Http\ResponseInterface;
+use CCT\Component\Rest\Serializer\ContextInterface;
 use CCT\Component\Rest\Transformer\Response\ResponseTransformerInterface;
 
 class ResponseTransform implements ResponseTransformInterface
@@ -29,13 +30,14 @@ class ResponseTransform implements ResponseTransformInterface
      * with an instance of Closure or an instance of TransformerInterface.
      *
      * @param ResponseInterface $data
+     * @param ContextInterface|null $context
      *
      * @return void
      */
-    public function transform(ResponseInterface $data)
+    public function transform(ResponseInterface $data, ContextInterface $context = null)
     {
         foreach ($this->transformers as $transformer) {
-            $this->applyResponseTransformer($transformer, $data);
+            $this->applyResponseTransformer($transformer, $data, $context);
         }
     }
 
@@ -44,11 +46,12 @@ class ResponseTransform implements ResponseTransformInterface
      *
      * @param ResponseTransformerInterface|\Closure $transformer
      * @param ResponseInterface $data
+     * @param ContextInterface|null $context
      */
-    protected function applyResponseTransformer($transformer, ResponseInterface $data)
+    protected function applyResponseTransformer($transformer, ResponseInterface $data, ContextInterface $context = null)
     {
         if ($transformer instanceof ResponseTransformerInterface && $transformer->supports($data)) {
-            $transformer->transform($data);
+            $transformer->transform($data, $context);
             return;
         }
 

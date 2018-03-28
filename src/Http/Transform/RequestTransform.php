@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace CCT\Component\Rest\Http\Transform;
 
+use CCT\Component\Rest\Serializer\ContextInterface;
 use CCT\Component\Rest\Transformer\Request\RequestTransformerInterface;
 
 class RequestTransform implements RequestTransformInterface
 {
-
     /**
      * @var RequestTransformerInterface[]|\Closure[]
      */
@@ -29,33 +29,34 @@ class RequestTransform implements RequestTransformInterface
      * into an array properly handled
      *
      * @param array|object $formData
+     * @param ContextInterface|null $context
      *
      * @return array
      */
-    public function transform($formData = [])
+    public function transform($formData = [], ContextInterface $context = null)
     {
         if (empty($formData)) {
             return $formData;
         }
 
         foreach ($this->transformers as $transformer) {
-            $this->applyRequestTransformers($transformer, $formData);
+            $this->applyRequestTransformers($transformer, $formData, $context);
         }
 
         return $formData;
     }
-
 
     /**
      * Applied single request transformer
      *
      * @param RequestTransformerInterface|\Closure $transformer
      * @param array|object $formData
+     * @param ContextInterface|null $context
      */
-    protected function applyRequestTransformers($transformer, $formData)
+    protected function applyRequestTransformers($transformer, $formData, ContextInterface $context = null)
     {
         if ($transformer instanceof RequestTransformerInterface && $transformer->supports($formData)) {
-            $transformer->transform($formData);
+            $transformer->transform($formData, $context);
         }
 
         if ($transformer instanceof \Closure) {

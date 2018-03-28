@@ -4,6 +4,7 @@ namespace CCT\Component\Rest\Transformer\Response;
 
 use CCT\Component\Rest\Http\Response;
 use CCT\Component\Rest\Http\ResponseInterface;
+use CCT\Component\Rest\Serializer\ContextInterface;
 
 class ObjectTransformer extends AbstractSerializerResponseTransformer
 {
@@ -12,13 +13,13 @@ class ObjectTransformer extends AbstractSerializerResponseTransformer
      *
      * {@inheritdoc}
      */
-    public function transform(ResponseInterface $response)
+    public function transform(ResponseInterface $response, ContextInterface $context = null)
     {
         $data = $this->serializer->deserialize(
             $response->getContent(),
             $this->class,
             'json',
-            $this->context
+            $context ?? $this->context
         );
 
         $response->setData($data);
@@ -31,12 +32,8 @@ class ObjectTransformer extends AbstractSerializerResponseTransformer
      */
     public function supports(ResponseInterface $response): bool
     {
-        $data = $response->getData();
-
         return
-            false === isset($data['data'])
-            && $response->isSuccessful()
-            && !empty($data)
-        ;
+            $response->isSuccessful()
+            && !empty($response->getData());
     }
 }

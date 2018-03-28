@@ -21,7 +21,6 @@ use GuzzleHttp\Psr7\Response;
 
 abstract class AbstractTestRequest extends TestCase
 {
-    use ProtectedMethodSetter;
 
     /**
      * @var string

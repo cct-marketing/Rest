@@ -4,7 +4,7 @@ namespace CCT\Component\Rest\Tests;
 
 use CCT\Component\Rest\Config;
 use CCT\Component\Rest\Tests\Fixture\TestClient;
-use CCT\Component\Rest\Tests\Fixture\TestRequest;
+use CCT\Component\Rest\Tests\Fixture\TestSerializerRequest;
 use JMS\Serializer\Serializer;
 use PHPUnit\Framework\TestCase;
 use Assert\InvalidArgumentException;
@@ -39,7 +39,7 @@ class ClientTest extends TestCase
 
     public function testTestRequestInstance()
     {
-        $this->assertInstanceOf(TestRequest::class, $this->client->apiTest());
+        $this->assertInstanceOf(TestSerializerRequest::class, $this->client->apiTest());
     }
 
 }

@@ -13,7 +13,7 @@ use CCT\Component\Rest\Http\Transform\ResponseTransform;
 use CCT\Component\Rest\Serializer\Context\Context;
 use CCT\Component\Rest\Serializer\JMSSerializerBuilder;
 use CCT\Component\Rest\Transformer\Request\FormObjectTransformer;
-use CCT\Component\Rest\Transformer\Response\CollectionObjectTransformer;
+use CCT\Component\Rest\Transformer\Response\ObjectCollectionTransformer;
 use CCT\Component\Rest\Transformer\Response\ObjectTransformer;
 use GuzzleHttp\Client as GuzzleClient;
 use CCT\Component\Rest\Serializer\SerializerInterface;
@@ -149,7 +149,7 @@ abstract class AbstractClient
     {
         $config->set(Config::RESPONSE_TRANSFORMERS, [
             new ObjectTransformer($serializer, $modelClass, new Context()),
-            new CollectionObjectTransformer($serializer, $modelClass, new Context())
+            new ObjectCollectionTransformer($serializer, $modelClass, new Context())
         ]);
     }
 

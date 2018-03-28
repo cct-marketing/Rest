@@ -3,11 +3,11 @@
 namespace CCT\Component\Rest\Tests\Fixture;
 
 use CCT\Component\Rest\Config;
-use CCT\Component\Rest\Http\AbstractRequest;
+use CCT\Component\Rest\Http\AbstractSerializerRequest;
 use CCT\Component\Rest\Http\Definition\RequestHeaders;
 use CCT\Component\Rest\Serializer\Context\Context;
 
-class TestRequest extends AbstractRequest
+class TestSerializerRequest extends AbstractSerializerRequest
 {
     protected function setUp()
     {
@@ -16,6 +16,8 @@ class TestRequest extends AbstractRequest
 
     public function apiCall(QueryParams $queryParams = null)
     {
+        $this->config->set('serialization_context', Context::create()->setGroups(['read']));
+
         $headers = RequestHeaders::create(
             [
                 'Accept' => 'application/json',

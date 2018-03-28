@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CCT\Component\Rest\Http;
 
+use CCT\Component\Rest\Config;
 use CCT\Component\Rest\Exception\InvalidParameterException;
 use CCT\Component\Rest\Exception\ServiceUnavailableException;
 use CCT\Component\Rest\Http\Definition\QueryParams;
@@ -28,11 +29,23 @@ abstract class AbstractRequest implements RequestInterface
     protected $headers;
 
     /**
-     * @param GuzzleClient $client
+     * The name of the response class used to
+     * @var Config
      */
-    public function __construct(GuzzleClient $client)
+    protected $config;
+
+    /**
+     * AbstractRequest constructor.
+     *
+     * @param GuzzleClient $client
+     * @param Config $config
+     */
+    public function __construct(GuzzleClient $client, Config $config)
     {
         $this->client = $client;
+        $this->config = $config;
+
+        $this->setUp();
     }
 
     /**
@@ -99,30 +112,29 @@ abstract class AbstractRequest implements RequestInterface
      * @param array|object $formData
      * @param QueryParams|null $queryParams
      *
-     * @return PsrResponseInterface|\Symfony\Component\HttpFoundation\Response
+     * @return ResponseInterface|\Symfony\Component\HttpFoundation\Response
      */
     protected function execute($method, string $uri, $formData = [], QueryParams $queryParams = null)
     {
-        $options = $this->getRequestOptions($formData);
-
-        $queryParams = $queryParams ?: new QueryParams();
-        $uri = $this->addQueryParamsToUri($uri, $queryParams);
+        $options = $this->getRequestOptions($formData, $queryParams);
 
         $response = $this->sendRequest($method, $uri, $options);
 
-        return $response;
+        return $this->createResponseRefFromResponse($response);
     }
 
     /**
      * @param array|object $formData
+     * @param QueryParams|null $queryParams
      *
      * @return array
      */
-    protected function getRequestOptions($formData = [])
+    protected function getRequestOptions($formData = [], QueryParams $queryParams = null)
     {
         return [
             'form_params' => $formData,
-            'headers' => $this->getHeaders()->toArray()
+            'headers' => $this->getHeaders()->toArray(),
+            'query' => $queryParams !== null ? $queryParams->toArray() : []
         ];
     }
 
@@ -133,7 +145,7 @@ abstract class AbstractRequest implements RequestInterface
      *
      * @throws ServiceUnavailableException
      *
-     * @return Response|object
+     * @return PsrResponseInterface|object
      */
     protected function sendRequest($method, string $uri, $options = [])
     {
@@ -149,27 +161,6 @@ abstract class AbstractRequest implements RequestInterface
         }
 
         return $response;
-    }
-
-    /**
-     * Adds a query string params to the URI.
-     *
-     * @param string $uri
-     * @param QueryParams $queryParams
-     *
-     * @return string
-     */
-    protected function addQueryParamsToUri(string $uri, QueryParams $queryParams)
-    {
-        if (false !== strpos($uri, '?')) {
-            throw new InvalidParameterException(sprintf(
-                'It was not possible to normalize the URI as the current URI %s already 
-                has the interrogation char in its string.' .
-                $uri
-            ));
-        }
-
-        return $uri . $queryParams->toString();
     }
 
     /**
@@ -191,4 +182,57 @@ abstract class AbstractRequest implements RequestInterface
     {
         return $this->headers;
     }
+
+    /**
+     * Create Response reflection from a response
+     *
+     * @param PsrResponseInterface $response
+     *
+     * @return ResponseInterface|object
+     */
+    protected function createResponseRefFromResponse(PsrResponseInterface $response)
+    {
+        $responseRef = $this->createResponseReflectionInstance();
+
+        return $responseRef->newInstance(
+            $response->getBody()->getContents(),
+            $response->getStatusCode(),
+            $response->getHeaders()
+        );
+    }
+
+    /**
+     * Creates a Reflection Response class.
+     *
+     * @return \ReflectionClass
+     */
+    private function createResponseReflectionInstance(): \ReflectionClass
+    {
+        $responseClass = $this->config->get(Config::RESPONSE_CLASS, Response::class);
+        $responseRef = new \ReflectionClass($responseClass);
+
+        if (!$responseRef->implementsInterface(ResponseInterface::class)) {
+            throw new InvalidParameterException(sprintf(
+                'The response class must be an implementation of %s',
+                ResponseInterface::class
+            ));
+        }
+
+        return $responseRef;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUri()
+    {
+        return $this->config->get(Config::URI_PREFIX, '/');
+    }
+
+    /**
+     * Initialization of the request.
+     *
+     * @return void
+     */
+    abstract protected function setUp();
 }

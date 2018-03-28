@@ -10,9 +10,14 @@ class TestModel
     public $heading;
 
     /**
+     * @var string
+     */
+    public $body;
+
+    /**
      * @return string
      */
-    public function getHeading()
+    public function getHeading(): ?string
     {
         return $this->heading;
     }
@@ -20,8 +25,26 @@ class TestModel
     /**
      * @param string $heading
      */
-    public function setHeading($heading)
+    public function setHeading(string $heading)
     {
         $this->heading = $heading;
     }
+
+    /**
+     * @return string
+     */
+    public function getBody(): ?string
+    {
+        return $this->body;
+    }
+
+    /**
+     * @param string $body
+     */
+    public function setBody(string $body)
+    {
+        $this->body = $body;
+    }
+
+
 }

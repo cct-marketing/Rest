@@ -3,9 +3,10 @@
 namespace CCT\Component\Rest\Transformer\Response;
 
 use CCT\Component\Rest\Http\ResponseInterface;
+use CCT\Component\Rest\Serializer\ContextInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-class CollectionObjectTransformer extends AbstractSerializerResponseTransformer
+class ObjectCollectionTransformer extends AbstractSerializerResponseTransformer
 {
     protected $mappingKeys = null;
 
@@ -14,7 +15,7 @@ class CollectionObjectTransformer extends AbstractSerializerResponseTransformer
      *
      * {@inheritdoc}
      */
-    public function transform(ResponseInterface $response)
+    public function transform(ResponseInterface $response, ContextInterface $context = null)
     {
         $data = $this->map($response->getData());
         foreach ($data as $k => $object) {
@@ -22,7 +23,7 @@ class CollectionObjectTransformer extends AbstractSerializerResponseTransformer
                 json_encode($object),
                 $this->class,
                 'json',
-                $this->context
+                $context ?? $this->context
             );
         }
 
@@ -55,7 +56,7 @@ class CollectionObjectTransformer extends AbstractSerializerResponseTransformer
      */
     protected function isArrayAndNotEmpty($data)
     {
-        return  is_array($data) && !empty($data);
+        return is_array($data) && !empty($data);
     }
 
     /**
@@ -87,7 +88,7 @@ class CollectionObjectTransformer extends AbstractSerializerResponseTransformer
             return true;
         }
 
-        return (bool) count(array_intersect($this->mappingKeys, array_flip($data))) > 0;
+        return (bool)count(array_intersect($this->mappingKeys, array_flip($data))) > 0;
     }
 
     /**

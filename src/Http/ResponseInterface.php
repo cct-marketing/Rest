@@ -9,7 +9,7 @@ interface ResponseInterface
     /**
      * Gets the Response data.
      *
-     * The data of Kong Response is not the same of the content,
+     * The data of Response is not the same of the content,
      * as the content is the original body response from the GuzzleResponse.
      *
      * @return mixed
@@ -19,7 +19,7 @@ interface ResponseInterface
     /**
      * Sets the response data.
      *
-     * The data of Kong Response is not the same of the content,
+     * The data of Response is not the same of the content,
      * as the content is the original body response from the GuzzleResponse.
      *
      * @param mixed $data
