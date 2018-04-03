@@ -89,7 +89,7 @@ class ArrayCollection implements CollectionInterface
      */
     public function remove($key)
     {
-        if (!isset($this->elements[$key]) && !array_key_exists($key, $this->elements)) {
+        if (!array_key_exists($key, $this->elements) && !isset($this->elements[$key])) {
             return null;
         }
 
@@ -142,7 +142,7 @@ class ArrayCollection implements CollectionInterface
      */
     public function offsetSet($offset, $value)
     {
-        if (!isset($offset)) {
+        if (null === $offset) {
             $this->add($value);
             return;
         }
@@ -173,7 +173,7 @@ class ArrayCollection implements CollectionInterface
      */
     public function contains($element)
     {
-        return in_array($element, $this->elements, true);
+        return \in_array($element, $this->elements, true);
     }
 
     /**
@@ -229,7 +229,7 @@ class ArrayCollection implements CollectionInterface
      */
     public function count()
     {
-        return count($this->elements);
+        return \count($this->elements);
     }
 
     /**
@@ -349,7 +349,7 @@ class ArrayCollection implements CollectionInterface
      */
     public function slice($offset, $length = null)
     {
-        return array_slice($this->elements, $offset, $length, true);
+        return \array_slice($this->elements, $offset, $length, true);
     }
 
     /**

@@ -8,7 +8,7 @@ use CCT\Component\Rest\Collection\ArrayCollection;
 
 class RequestHeaders extends ArrayCollection
 {
-    public static function create($params = [])
+    public static function create(array $params = [])
     {
         return new static($params);
     }

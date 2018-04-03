@@ -43,7 +43,7 @@ class JMSSerializerAdapter implements SerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serialize($data, $format, ContextInterface $context = null)
+    public function serialize($data, $format, ContextInterface $context = null): ?string
     {
         $context = $this->convertSerializationContext($context);
 
@@ -96,7 +96,7 @@ class JMSSerializerAdapter implements SerializerInterface
      *
      * @return SerializationContext
      */
-    private function createSerializationContext()
+    private function createSerializationContext(): SerializationContext
     {
         return $this->serializationContextFactory
             ? $this->serializationContextFactory->createSerializationContext()
@@ -108,7 +108,7 @@ class JMSSerializerAdapter implements SerializerInterface
      *
      * @return DeserializationContext
      */
-    private function createDeserializationContext()
+    private function createDeserializationContext(): DeserializationContext
     {
         return $this->deserializationContextFactory
             ? $this->deserializationContextFactory->createDeserializationContext()
@@ -146,7 +146,7 @@ class JMSSerializerAdapter implements SerializerInterface
      * @param ContextInterface $context
      * @param DeserializationContext $jmsContext
      */
-    private function mapMaxDepth(ContextInterface $context, DeserializationContext $jmsContext)
+    private function mapMaxDepth(ContextInterface $context, DeserializationContext $jmsContext): void
     {
         $maxDepth = $context->getMaxDepth();
         if (null === $maxDepth) {
@@ -162,7 +162,7 @@ class JMSSerializerAdapter implements SerializerInterface
      * @param ContextInterface $context
      * @param JMSContext $jmsContext
      */
-    private function mapVersion(ContextInterface $context, JMSContext $jmsContext)
+    private function mapVersion(ContextInterface $context, JMSContext $jmsContext): void
     {
         if (null === $context->getVersion()) {
             return;
@@ -175,7 +175,7 @@ class JMSSerializerAdapter implements SerializerInterface
      * @param ContextInterface $context
      * @param JMSContext $jmsContext
      */
-    private function mapGroups(ContextInterface $context, JMSContext $jmsContext)
+    private function mapGroups(ContextInterface $context, JMSContext $jmsContext): void
     {
         if (null === $context->getGroups()) {
             return;
@@ -188,7 +188,7 @@ class JMSSerializerAdapter implements SerializerInterface
      * @param ContextInterface $context
      * @param JMSContext $jmsContext
      */
-    private function mapMaxDepthEnabled(ContextInterface $context, JMSContext $jmsContext)
+    private function mapMaxDepthEnabled(ContextInterface $context, JMSContext $jmsContext): void
     {
         if (null === $context->isMaxDepthEnabled()) {
             return;
@@ -201,7 +201,7 @@ class JMSSerializerAdapter implements SerializerInterface
      * @param ContextInterface $context
      * @param JMSContext $jmsContext
      */
-    private function mapSerializeNull(ContextInterface $context, JMSContext $jmsContext)
+    private function mapSerializeNull(ContextInterface $context, JMSContext $jmsContext): void
     {
         if (null === $context->getSerializeNull()) {
             return;
@@ -214,7 +214,7 @@ class JMSSerializerAdapter implements SerializerInterface
      * @param ContextInterface $context
      * @param JMSContext $jmsContext
      */
-    private function mapExclusionStrategies(ContextInterface $context, JMSContext $jmsContext)
+    private function mapExclusionStrategies(ContextInterface $context, JMSContext $jmsContext): void
     {
         foreach ($context->getExclusionStrategies() as $strategy) {
             $jmsContext->addExclusionStrategy($strategy);
@@ -231,7 +231,7 @@ class JMSSerializerAdapter implements SerializerInterface
      *
      * @return array
      */
-    public function toArray($data, ContextInterface $context = null)
+    public function toArray($data, ContextInterface $context = null): array
     {
         $context = $this->convertSerializationContext($context);
 

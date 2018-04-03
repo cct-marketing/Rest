@@ -14,7 +14,7 @@ interface ContextInterface
      *
      * @return self
      */
-    public function setAttribute($key, $value);
+    public function setAttribute($key, $value): self;
 
     /** Checks if contains a normalization attribute.
      *
@@ -22,7 +22,7 @@ interface ContextInterface
      *
      * @return bool
      */
-    public function hasAttribute($key);
+    public function hasAttribute($key): bool;
 
     /**
      * Gets an attribute.
@@ -38,23 +38,23 @@ interface ContextInterface
      *
      * @return array
      */
-    public function getAttributes();
+    public function getAttributes(): array;
 
     /**
      * Sets the normalization version.
      *
-     * @param int|null $version
+     * @param string|null $version
      *
      * @return self
      */
-    public function setVersion($version);
+    public function setVersion($version): self;
 
     /**
      * Gets the normalization version.
      *
-     * @return int|null
+     * @return string|null
      */
-    public function getVersion();
+    public function getVersion(): ?string;
 
     /**
      * Adds a normalization group.
@@ -63,7 +63,7 @@ interface ContextInterface
      *
      * @return self
      */
-    public function addGroup($group);
+    public function addGroup($group): self;
 
     /**
      * Adds normalization groups.
@@ -72,14 +72,14 @@ interface ContextInterface
      *
      * @return self
      */
-    public function addGroups(array $groups);
+    public function addGroups(array $groups): self;
 
     /**
      * Gets the normalization groups.
      *
      * @return string[]|null
      */
-    public function getGroups();
+    public function getGroups(): ?array;
 
     /**
      * Set the normalization groups.
@@ -88,13 +88,13 @@ interface ContextInterface
      *
      * @return self
      */
-    public function setGroups(array $groups = null);
+    public function setGroups(array $groups = null): self;
 
 
     /**
      * @return bool|null
      */
-    public function isMaxDepthEnabled();
+    public function isMaxDepthEnabled(): ?bool;
 
     /**
      * Sets serialize null.
@@ -103,22 +103,22 @@ interface ContextInterface
      *
      * @return self
      */
-    public function setSerializeNull($serializeNull);
+    public function setSerializeNull($serializeNull): self;
 
     /**
      * Gets serialize null.
      *
      * @return bool|null
      */
-    public function getSerializeNull();
+    public function getSerializeNull(): ?bool;
 
     /* Gets the array of exclusion strategies.
     *
     * Notice: This method only applies to the JMS serializer adapter.
     *
-    * @return ExclusionStrategyInterface[]
+    * @return array|ExclusionStrategyInterface[]
     */
-    public function getExclusionStrategies();
+    public function getExclusionStrategies(): array;
 
     /**
      * Adds an exclusion strategy.
@@ -135,5 +135,5 @@ interface ContextInterface
      * @return int|null
      *
      */
-    public function getMaxDepth();
+    public function getMaxDepth(): ?int;
 }

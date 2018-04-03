@@ -12,6 +12,17 @@ class Response extends BaseResponse implements ResponseInterface
      */
     protected $data;
 
+    /**
+     * Response constructor.
+     *
+     * @param string $content
+     * @param int $status
+     * @param array $headers
+     *
+     * @throws \CCT\Component\Rest\Exception\InvalidParameterException
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
+     */
     public function __construct(string $content = '', int $status = 200, array $headers = array())
     {
         parent::__construct($content, $status, $headers);
@@ -30,14 +41,21 @@ class Response extends BaseResponse implements ResponseInterface
     /**
      * {@inheritdoc}
      */
-    public function setData($data)
+    public function setData($data): void
     {
         $this->data = $data;
     }
 
+    /**
+     * @param string|null $content
+     *
+     * @return array|null
+     * @throws \CCT\Component\Rest\Exception\InvalidParameterException
+     * @throws \RuntimeException
+     */
     protected function jsonToArray(string $content = null): ?array
     {
-        if (empty($content)) {
+        if (null === $content || '' === trim($content)) {
             return null;
         }
 
@@ -53,6 +71,8 @@ class Response extends BaseResponse implements ResponseInterface
 
     /**
      * Check if content type is json
+     *
+     * @throws \CCT\Component\Rest\Exception\InvalidParameterException
      */
     protected function checkContentType()
     {

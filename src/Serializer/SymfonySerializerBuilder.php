@@ -15,7 +15,6 @@ use Symfony\Component\Serializer\Serializer;
 
 class SymfonySerializerBuilder implements SerializerBuilderInterface
 {
-
     /**
      * @var Config
      */
@@ -55,6 +54,10 @@ class SymfonySerializerBuilder implements SerializerBuilderInterface
 
     /**
      * Set default configuration
+     *
+     * @throws \InvalidArgumentException
+     * @throws \Symfony\Component\Serializer\Exception\RuntimeException
+     * @throws \Symfony\Component\Serializer\Exception\MappingException
      */
     public function configureDefaults()
     {
@@ -63,8 +66,13 @@ class SymfonySerializerBuilder implements SerializerBuilderInterface
         $loaders = [];
         $directoryLoader = new DirectoryLoader();
 
-        foreach ($this->config->get(Config::METADATA_DIRS, []) as $metadataDir) {
-            $loaders = array_merge($loaders, $directoryLoader->load($metadataDir['dir']));
+        $metadataDirs = $this->config->get(Config::METADATA_DIRS, []);
+        foreach ($metadataDirs as $metadataDir) {
+            $newLoaders = $directoryLoader->load($metadataDir['dir']);
+            if (null === $newLoaders || 0 === count($newLoaders)) {
+                continue;
+            }
+            array_push($loaders, ...$newLoaders);
         }
 
         $classMetadataFactory = new ClassMetadataFactory(new LoaderChain($loaders));
@@ -98,7 +106,7 @@ class SymfonySerializerBuilder implements SerializerBuilderInterface
     /**
      * @param array $encoders
      */
-    public function setEncoders(array $encoders)
+    public function setEncoders(array $encoders): void
     {
         $this->encoders = $encoders;
     }
@@ -114,7 +122,7 @@ class SymfonySerializerBuilder implements SerializerBuilderInterface
     /**
      * @param array $normalizers
      */
-    public function setNormalizers(array $normalizers)
+    public function setNormalizers(array $normalizers): void
     {
         $this->normalizers = $normalizers;
     }
@@ -125,8 +133,9 @@ class SymfonySerializerBuilder implements SerializerBuilderInterface
      * @param $dir
      *
      * @return $this
+     * @throws \InvalidArgumentException
      */
-    public function addMetadataDir($dir)
+    public function addMetadataDir($dir): self
     {
         if (!is_dir($dir)) {
             throw new \InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));

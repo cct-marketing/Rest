@@ -11,16 +11,18 @@ use Symfony\Component\Serializer\Mapping\Loader\YamlFileLoader;
  */
 class DirectoryLoader
 {
-    const FILE_TYPE_YAML = 'yaml';
-    const FILE_TYPE_XML = 'xml';
+    public const FILE_TYPE_YAML = 'yaml';
+    public const FILE_TYPE_XML = 'xml';
 
     /**
      * @param $dir
      * @param string $type supported types are DirectoryLoader::FILE_TYPE_YAML or DirectoryLoader::FILE_TYPE_XML
      *
      * @return array
+     * @throws \Symfony\Component\Serializer\Exception\MappingException
+     * @throws \InvalidArgumentException
      */
-    public function load($dir, $type = self::FILE_TYPE_YAML)
+    public function load($dir, $type = self::FILE_TYPE_YAML): array
     {
         $dir = rtrim($dir, DIRECTORY_SEPARATOR);
 
@@ -42,12 +44,14 @@ class DirectoryLoader
      * @param string $type
      *
      * @return array
+     * @throws \InvalidArgumentException
+     * @throws \Symfony\Component\Serializer\Exception\MappingException
      */
-    private function scanDirectory($dir, $type)
+    private function scanDirectory($dir, $type): array
     {
         $loaders = [];
 
-        foreach (scandir($dir) as $file) {
+        foreach (scandir($dir, SCANDIR_SORT_NONE) as $file) {
             if (false === $this->checkFileType($file, $type)) {
                 continue;
             }
@@ -68,15 +72,10 @@ class DirectoryLoader
      *
      * @return bool
      */
-    private function checkFileType($file, $type)
+    private function checkFileType($file, $type): bool
     {
-        if (in_array($file, array(".", ".."))
-            || $type !== strtolower(pathinfo($file, PATHINFO_EXTENSION))
-        ) {
-            return false;
-        }
-
-        return true;
+        return !(\in_array($file, array('.', '..'))
+            || $type !== strtolower(pathinfo($file, PATHINFO_EXTENSION)));
     }
 
     /**
@@ -86,8 +85,9 @@ class DirectoryLoader
      * @param string $file
      *
      * @return bool
+     * @throws \InvalidArgumentException
      */
-    private function isReadable($dir, $file)
+    private function isReadable($dir, $file): bool
     {
         if (!is_readable($dir . DIRECTORY_SEPARATOR . $file)) {
             throw new InvalidArgumentException(
@@ -108,6 +108,8 @@ class DirectoryLoader
      * @param $type
      *
      * @return XmlFileLoader|YamlFileLoader
+     * @throws \InvalidArgumentException
+     * @throws \Symfony\Component\Serializer\Exception\MappingException
      */
     private function createLoader($file, $type)
     {

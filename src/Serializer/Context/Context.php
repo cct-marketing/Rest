@@ -34,12 +34,12 @@ final class Context implements ContextInterface
     /**
      * @var array|null
      */
-    private $groups = null;
+    private $groups;
 
     /**
      * @var int|null
      */
-    private $maxDepth = null;
+    private $maxDepth;
 
     /**
      * @var bool
@@ -62,9 +62,9 @@ final class Context implements ContextInterface
      * @param string $key
      * @param mixed $value
      *
-     * @return self
+     * @return ContextInterface
      */
-    public function setAttribute($key, $value)
+    public function setAttribute($key, $value): ContextInterface
     {
         $this->attributes[$key] = $value;
 
@@ -78,7 +78,7 @@ final class Context implements ContextInterface
      *
      * @return bool
      */
-    public function hasAttribute($key)
+    public function hasAttribute($key): bool
     {
         return isset($this->attributes[$key]);
     }
@@ -103,7 +103,7 @@ final class Context implements ContextInterface
      *
      * @return array
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
@@ -111,11 +111,11 @@ final class Context implements ContextInterface
     /**
      * Sets the normalization version.
      *
-     * @param int|null $version
+     * @param string|null $version
      *
-     * @return self
+     * @return ContextInterface
      */
-    public function setVersion($version)
+    public function setVersion($version): ContextInterface
     {
         $this->version = $version;
 
@@ -125,9 +125,9 @@ final class Context implements ContextInterface
     /**
      * Gets the normalization version.
      *
-     * @return int|null
+     * @return string|null
      */
-    public function getVersion()
+    public function getVersion(): ?string
     {
         return $this->version;
     }
@@ -137,14 +137,14 @@ final class Context implements ContextInterface
      *
      * @param string $group
      *
-     * @return self
+     * @return ContextInterface
      */
-    public function addGroup($group)
+    public function addGroup($group): ContextInterface
     {
         if (null === $this->groups) {
             $this->groups = [];
         }
-        if (!in_array($group, $this->groups)) {
+        if (!\in_array($group, $this->groups, true)) {
             $this->groups[] = $group;
         }
 
@@ -156,9 +156,9 @@ final class Context implements ContextInterface
      *
      * @param string[] $groups
      *
-     * @return self
+     * @return ContextInterface
      */
-    public function addGroups(array $groups)
+    public function addGroups(array $groups): ContextInterface
     {
         foreach ($groups as $group) {
             $this->addGroup($group);
@@ -172,7 +172,7 @@ final class Context implements ContextInterface
      *
      * @return string[]|null
      */
-    public function getGroups()
+    public function getGroups(): ?array
     {
         return $this->groups;
     }
@@ -182,9 +182,9 @@ final class Context implements ContextInterface
      *
      * @param string[]|null $groups
      *
-     * @return self
+     * @return ContextInterface
      */
-    public function setGroups(array $groups = null)
+    public function setGroups(array $groups = null): ContextInterface
     {
         $this->groups = $groups;
 
@@ -196,9 +196,9 @@ final class Context implements ContextInterface
      *
      * @param int|null $maxDepth
      *
-     * @return self
+     * @return ContextInterface
      */
-    public function setMaxDepth($maxDepth)
+    public function setMaxDepth($maxDepth): ContextInterface
     {
         $this->maxDepth = $maxDepth;
 
@@ -211,7 +211,7 @@ final class Context implements ContextInterface
      * @return int|null
      *
      */
-    public function getMaxDepth()
+    public function getMaxDepth(): ?int
     {
         return $this->maxDepth;
     }
@@ -233,7 +233,7 @@ final class Context implements ContextInterface
     /**
      * @return bool|null
      */
-    public function isMaxDepthEnabled()
+    public function isMaxDepthEnabled(): ?bool
     {
         return $this->isMaxDepthEnabled;
     }
@@ -243,9 +243,9 @@ final class Context implements ContextInterface
      *
      * @param bool|null $serializeNull
      *
-     * @return self
+     * @return ContextInterface
      */
-    public function setSerializeNull($serializeNull)
+    public function setSerializeNull($serializeNull): ContextInterface
     {
         $this->serializeNull = $serializeNull;
 
@@ -257,7 +257,7 @@ final class Context implements ContextInterface
      *
      * @return bool|null
      */
-    public function getSerializeNull()
+    public function getSerializeNull(): ?bool
     {
         return $this->serializeNull;
     }
@@ -269,7 +269,7 @@ final class Context implements ContextInterface
      *
      * @return ExclusionStrategyInterface[]
      */
-    public function getExclusionStrategies()
+    public function getExclusionStrategies(): array
     {
         return $this->exclusionStrategies;
     }
@@ -281,7 +281,7 @@ final class Context implements ContextInterface
      *
      * @param ExclusionStrategyInterface $exclusionStrategy
      */
-    public function addExclusionStrategy(ExclusionStrategyInterface $exclusionStrategy)
+    public function addExclusionStrategy(ExclusionStrategyInterface $exclusionStrategy): void
     {
         $this->exclusionStrategies[] = $exclusionStrategy;
     }

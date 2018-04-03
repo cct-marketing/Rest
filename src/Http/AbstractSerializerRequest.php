@@ -59,9 +59,18 @@ abstract class AbstractSerializerRequest extends AbstractRequest implements Seri
      * @param QueryParams|null $queryParams
      *
      * @return ResponseInterface
+     * @throws \ReflectionException
+     * @throws \CCT\Component\Rest\Exception\InvalidParameterException
+     * @throws \RuntimeException
+     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \CCT\Component\Rest\Exception\ServiceUnavailableException
      */
-    protected function execute($method, string $uri, $formData = [], QueryParams $queryParams = null)
-    {
+    protected function execute(
+        $method,
+        string $uri,
+        array $formData = [],
+        QueryParams $queryParams = null
+    ): ResponseInterface {
         $response = parent::execute($method, $uri, $formData, $queryParams);
 
         if (null !== $this->responseTransform) {
@@ -82,7 +91,7 @@ abstract class AbstractSerializerRequest extends AbstractRequest implements Seri
      *
      * @return array
      */
-    protected function getRequestOptions($formData = [], QueryParams $queryParams = null)
+    protected function getRequestOptions(array $formData = [], QueryParams $queryParams = null): array
     {
         if (null !== $this->requestTransform) {
             $formData = $this->requestTransform->transform(

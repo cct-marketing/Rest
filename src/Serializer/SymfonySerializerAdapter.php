@@ -34,7 +34,7 @@ class SymfonySerializerAdapter implements SerializerInterface
      *
      * @return string
      */
-    public function serialize($data, $format, ContextInterface $context = null)
+    public function serialize($data, $format, ContextInterface $context = null): ?string
     {
         $newContext = $this->convertContext($context);
         if (null !== $context) {
@@ -64,7 +64,7 @@ class SymfonySerializerAdapter implements SerializerInterface
      *
      * @return array|null
      */
-    private function convertContext(ContextInterface $context = null)
+    private function convertContext(ContextInterface $context = null): ?array
     {
         if (null === $context) {
             return null;
@@ -94,8 +94,11 @@ class SymfonySerializerAdapter implements SerializerInterface
      * @param ContextInterface|null $context
      *
      * @return array
+     * @throws \Symfony\Component\Serializer\Exception\LogicException
+     * @throws \Symfony\Component\Serializer\Exception\InvalidArgumentException
+     * @throws \Symfony\Component\Serializer\Exception\CircularReferenceException
      */
-    public function toArray($data, ContextInterface $context = null)
+    public function toArray($data, ContextInterface $context = null): array
     {
         $newContext = $this->convertContext($context);
 
@@ -110,6 +113,13 @@ class SymfonySerializerAdapter implements SerializerInterface
      * @param ContextInterface|null $context
      *
      * @return mixed this returns whatever the passed type is, typically an object or an array of objects
+     * @throws \Symfony\Component\Serializer\Exception\UnexpectedValueException
+     * @throws \Symfony\Component\Serializer\Exception\RuntimeException
+     * @throws \Symfony\Component\Serializer\Exception\NotNormalizableValueException
+     * @throws \Symfony\Component\Serializer\Exception\LogicException
+     * @throws \Symfony\Component\Serializer\Exception\InvalidArgumentException
+     * @throws \Symfony\Component\Serializer\Exception\ExtraAttributesException
+     * @throws \Symfony\Component\Serializer\Exception\BadMethodCallException
      */
     public function fromArray(array $data, $type, ContextInterface $context = null)
     {

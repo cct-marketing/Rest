@@ -26,7 +26,7 @@ interface ResponseInterface
      *
      * @return void
      */
-    public function setData($data);
+    public function setData($data): void;
 
     /**
      * Is response successful?

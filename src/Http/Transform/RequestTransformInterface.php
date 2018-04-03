@@ -17,5 +17,5 @@ interface RequestTransformInterface
      *
      * @return array
      */
-    public function transform($formData = [], ContextInterface $context = null);
+    public function transform(array $formData = [], ContextInterface $context = null): array;
 }

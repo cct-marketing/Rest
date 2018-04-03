@@ -8,18 +8,21 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ObjectCollectionTransformer extends AbstractSerializerResponseTransformer
 {
-    protected $mappingKeys = null;
+    /**
+     * @var array|null
+     */
+    protected $mappingKeys;
 
     /**
      * @param ResponseInterface|Response $response
      *
      * {@inheritdoc}
      */
-    public function transform(ResponseInterface $response, ContextInterface $context = null)
+    public function transform(ResponseInterface $response, ContextInterface $context = null): void
     {
         $data = $response->getData();
 
-        if (count($this->mappingKeys) === 0) {
+        if (\count($this->mappingKeys) === 0) {
             $response->setData(
                 $this->transformArrayPartial($data, $context)
             );
@@ -82,9 +85,9 @@ class ObjectCollectionTransformer extends AbstractSerializerResponseTransformer
      *
      * @return bool
      */
-    protected function isArrayAndNotEmpty($data)
+    protected function isArrayAndNotEmpty($data): bool
     {
-        return is_array($data) && !empty($data);
+        return \is_array($data) && !empty($data);
     }
 
     /**
@@ -108,7 +111,7 @@ class ObjectCollectionTransformer extends AbstractSerializerResponseTransformer
             array_filter(
                 $data,
                 function ($key) use ($mappingKeys) {
-                    return in_array($key, $mappingKeys);
+                    return \in_array($key, $mappingKeys, true);
                 },
                 ARRAY_FILTER_USE_KEY
             );
@@ -125,7 +128,7 @@ class ObjectCollectionTransformer extends AbstractSerializerResponseTransformer
             return true;
         }
 
-        return (bool)count(array_intersect($this->mappingKeys, array_keys($data))) > 0;
+        return (bool)\count(array_intersect($this->mappingKeys, array_keys($data))) > 0;
     }
 
     /**
@@ -139,7 +142,7 @@ class ObjectCollectionTransformer extends AbstractSerializerResponseTransformer
     /**
      * @param null|array $mappingKeys
      */
-    public function setMappingKeys(array $mappingKeys = null)
+    public function setMappingKeys(array $mappingKeys = null): void
     {
         $this->mappingKeys = $mappingKeys;
     }
@@ -171,6 +174,6 @@ class ObjectCollectionTransformer extends AbstractSerializerResponseTransformer
      */
     protected function isSequential(array $data): bool
     {
-        return array_keys($data) === range(0, count($data) - 1);
+        return array_keys($data) === range(0, \count($data) - 1);
     }
 }

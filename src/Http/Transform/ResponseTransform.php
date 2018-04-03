@@ -34,10 +34,10 @@ class ResponseTransform implements ResponseTransformInterface
      *
      * @return void
      */
-    public function transform(ResponseInterface $response, ContextInterface $context = null)
+    public function transform(ResponseInterface $response, ContextInterface $context = null): void
     {
         if (null === $response->getData()) {
-            return null;
+            return;
         }
 
         foreach ($this->transformers as $transformer) {
@@ -56,7 +56,7 @@ class ResponseTransform implements ResponseTransformInterface
         $transformer,
         ResponseInterface $response,
         ContextInterface $context = null
-    ) {
+    ): void {
         if ($transformer instanceof ResponseTransformerInterface && $transformer->supports($response)) {
             $transformer->transform($response, $context);
             return;

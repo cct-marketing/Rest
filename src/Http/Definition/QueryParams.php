@@ -8,7 +8,7 @@ use CCT\Component\Rest\Collection\ArrayCollection;
 
 class QueryParams extends ArrayCollection
 {
-    public function toString()
+    public function toString(): string
     {
         if ($this->isEmpty()) {
             return '';
@@ -17,7 +17,7 @@ class QueryParams extends ArrayCollection
         return '?' . http_build_query($this->toArray());
     }
 
-    public static function create($params = [])
+    public static function create(array $params = [])
     {
         return new static($params);
     }

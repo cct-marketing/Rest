@@ -53,7 +53,7 @@ class JMSSerializerBuilder implements SerializerBuilderInterface
         $metadataDirs = $this->config->get(Config::METADATA_DIRS, []);
 
         foreach ($metadataDirs as $key => $metadataDir) {
-            if ($metadataDir['dir'] == $dir) {
+            if ($metadataDir['dir'] === $dir) {
                 unset($metadataDirs[$key]);
             }
         }
@@ -77,7 +77,7 @@ class JMSSerializerBuilder implements SerializerBuilderInterface
         $eventSubscribers = $this->config->get(Config::EVENT_SUBSCRIBERS, []);
 
         foreach ($eventSubscribers as $key => $storedEventSubscribers) {
-            if (get_class($storedEventSubscribers) === get_class($eventSubscriber)) {
+            if (\get_class($storedEventSubscribers) === \get_class($eventSubscriber)) {
                 unset($eventSubscribers[$key]);
             }
         }
@@ -101,7 +101,7 @@ class JMSSerializerBuilder implements SerializerBuilderInterface
         $subscribingHandlers = $this->config->get(Config::SERIALIZATION_HANDLERS, []);
 
         foreach ($subscribingHandlers as $key => $storedSubscribingHandlers) {
-            if (get_class($storedSubscribingHandlers) === get_class($subscribingHandler)) {
+            if (\get_class($storedSubscribingHandlers) === \get_class($subscribingHandler)) {
                 unset($subscribingHandlers[$key]);
             }
         }
@@ -128,6 +128,8 @@ class JMSSerializerBuilder implements SerializerBuilderInterface
 
     /**
      * {@inheritdoc}
+     * @throws \JMS\Serializer\Exception\InvalidArgumentException
+     * @throws \JMS\Serializer\Exception\RuntimeException
      */
     public function build(): SerializerInterface
     {
@@ -148,8 +150,9 @@ class JMSSerializerBuilder implements SerializerBuilderInterface
      * Apply Metadata Directories
      *
      * @return $this
+     * @throws \JMS\Serializer\Exception\InvalidArgumentException
      */
-    protected function applyMetadataDirectory()
+    protected function applyMetadataDirectory(): self
     {
         foreach ($this->config->get(Config::METADATA_DIRS, []) as $metadataDir) {
             $this->jmsSerializerBuilder->addMetadataDir($metadataDir['dir'], $metadataDir['namespacePrefix']);
@@ -162,8 +165,9 @@ class JMSSerializerBuilder implements SerializerBuilderInterface
      * Apply event subscribers
      *
      * @return $this
+     * @throws \JMS\Serializer\Exception\InvalidArgumentException
      */
-    protected function applyEventSubscribers()
+    protected function applyEventSubscribers(): self
     {
         $eventSubscribers = $this->config->get(Config::EVENT_SUBSCRIBERS, []);
         $this->jmsSerializerBuilder->configureListeners(function (EventDispatcher $dispatcher) use ($eventSubscribers) {
@@ -179,8 +183,9 @@ class JMSSerializerBuilder implements SerializerBuilderInterface
      * Apply serialization handlers
      *
      * @return $this
+     * @throws \JMS\Serializer\Exception\RuntimeException
      */
-    protected function applySerializationHandlers()
+    protected function applySerializationHandlers(): self
     {
         $serializationHandlers = $this->config->get(Config::SERIALIZATION_HANDLERS, []);
         $this->jmsSerializerBuilder->configureHandlers(
@@ -199,7 +204,7 @@ class JMSSerializerBuilder implements SerializerBuilderInterface
      *
      * @return $this
      */
-    protected function applyObjectConstructor()
+    protected function applyObjectConstructor(): self
     {
         $objectConstructor = $this->config->get(Config::OBJECT_CONSTRUCTOR, null);
         if (null !== $objectConstructor) {

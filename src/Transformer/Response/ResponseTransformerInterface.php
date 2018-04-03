@@ -16,7 +16,7 @@ interface ResponseTransformerInterface
      *
      * @return void
      */
-    public function transform(ResponseInterface $response, ContextInterface $context = null);
+    public function transform(ResponseInterface $response, ContextInterface $context = null): void;
 
     /**
      * Checks if the response sent is supported to executes the transformation.

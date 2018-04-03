@@ -15,7 +15,7 @@ interface SerializerInterface
      *
      * @return string
      */
-    public function serialize($data, $format, ContextInterface $context = null);
+    public function serialize($data, $format, ContextInterface $context = null): ?string;
 
     /**
      * Deserialize the given data to the specified type.
@@ -39,7 +39,7 @@ interface SerializerInterface
      *
      * @return array
      */
-    public function toArray($data, ContextInterface $context = null);
+    public function toArray($data, ContextInterface $context = null): array;
 
     /**
      * Restores objects from an array structure.

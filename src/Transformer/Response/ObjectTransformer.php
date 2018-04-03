@@ -13,7 +13,7 @@ class ObjectTransformer extends AbstractSerializerResponseTransformer
      *
      * {@inheritdoc}
      */
-    public function transform(ResponseInterface $response, ContextInterface $context = null)
+    public function transform(ResponseInterface $response, ContextInterface $context = null): void
     {
         $data = $this->serializer->deserialize(
             $response->getContent(),

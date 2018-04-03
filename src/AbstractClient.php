@@ -40,6 +40,12 @@ abstract class AbstractClient
      */
     protected static $serializer;
 
+    /**
+     * AbstractClient constructor.
+     *
+     * @param Config $config
+     * @param bool $defaultConfig
+     */
     public function __construct(Config $config, bool $defaultConfig = true)
     {
         Assert::that($config->toArray())->keyExists(Config::ENDPOINT);
@@ -55,24 +61,43 @@ abstract class AbstractClient
         }
     }
 
-    public function enableDefaultConfig()
+    /**
+     * Enable Default Config
+     */
+    public function enableDefaultConfig(): void
     {
         $this->defaultConfig = true;
     }
 
-    public function disableDefaultConfig()
+    /**
+     * Disabled default config
+     */
+    public function disableDefaultConfig(): void
     {
         $this->defaultConfig = false;
     }
 
+    /**
+     * Is default config enabled
+     *
+     * @return bool
+     */
     public function isDefaultConfig(): bool
     {
         return $this->defaultConfig;
     }
 
+    /**
+     * Applies the default config
+     *
+     * @return mixed
+     */
     abstract protected function applyDefaults();
 
-    public function clearDefaults()
+    /**
+     * Clears Config values
+     */
+    public function clearDefaults(): void
     {
         $this->config->remove(Config::METADATA_DIRS);
         $this->config->remove(Config::DEBUG);
@@ -82,7 +107,14 @@ abstract class AbstractClient
         $this->config->remove(Config::USE_DEFAULT_RESPONSE_TRANSFORMERS);
     }
 
-    protected function buildSerializer(Config $config)
+    /**
+     * @param Config $config
+     *
+     * @return SerializerInterface|null
+     * @throws \JMS\Serializer\Exception\RuntimeException
+     * @throws \JMS\Serializer\Exception\InvalidArgumentException
+     */
+    protected function buildSerializer(Config $config): ?SerializerInterface
     {
 
         if (class_exists('JMS\Serializer\Serializer')) {
@@ -100,7 +132,16 @@ abstract class AbstractClient
         return null;
     }
 
-    protected function getBuiltSerializer(Config $config)
+    /**
+     * Gets the built serializer
+     *
+     * @param Config $config
+     *
+     * @return SerializerInterface
+     * @throws \JMS\Serializer\Exception\RuntimeException
+     * @throws \JMS\Serializer\Exception\InvalidArgumentException
+     */
+    protected function getBuiltSerializer(Config $config): SerializerInterface
     {
         if (null === static::$serializer) {
             static::$serializer = $this->buildSerializer($config);
@@ -109,6 +150,15 @@ abstract class AbstractClient
         return static::$serializer;
     }
 
+    /**
+     * @param $class
+     * @param Config $config
+     * @param SerializerInterface|null $serializer
+     *
+     * @return object
+     * @throws \ReflectionException
+     * @throws \CCT\Component\Rest\Exception\InvalidParameterException
+     */
     protected function createRequestInstance($class, Config $config, SerializerInterface $serializer = null)
     {
         $reflectionClass = new \ReflectionClass($class);
@@ -145,21 +195,38 @@ abstract class AbstractClient
         return (bool)$this->config->get(Config::USE_DEFAULT_RESPONSE_TRANSFORMERS, true);
     }
 
-    protected function applyDefaultResponseTransformers(Config $config, SerializerInterface $serializer, $modelClass)
-    {
+    /**
+     * @param Config $config
+     * @param SerializerInterface $serializer
+     * @param $modelClass
+     */
+    protected function applyDefaultResponseTransformers(
+        Config $config,
+        SerializerInterface $serializer,
+        $modelClass
+    ): void {
         $config->set(Config::RESPONSE_TRANSFORMERS, [
             new ObjectTransformer($serializer, $modelClass, new Context()),
             new ObjectCollectionTransformer($serializer, $modelClass, new Context())
         ]);
     }
 
-    protected function applyDefaultRequestTransformers(Config $config, SerializerInterface $serializer)
+    /**
+     * @param Config $config
+     * @param SerializerInterface $serializer
+     */
+    protected function applyDefaultRequestTransformers(Config $config, SerializerInterface $serializer): void
     {
         $config->set(Config::REQUEST_TRANSFORMERS, [
             new FormObjectTransformer($serializer, new Context()),
         ]);
     }
 
+    /**
+     * @param Config $config
+     *
+     * @return RequestTransform|null
+     */
     protected function createRequestTransform(Config $config): ?RequestTransform
     {
         return new RequestTransform(
@@ -167,6 +234,11 @@ abstract class AbstractClient
         );
     }
 
+    /**
+     * @param Config $config
+     *
+     * @return ResponseTransform|null
+     */
     protected function createResponseTransform(Config $config): ?ResponseTransform
     {
         return new ResponseTransform(
