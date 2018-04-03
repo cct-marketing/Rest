@@ -28,6 +28,10 @@ class DirectoryLoader
             throw new InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
         }
 
+        if (!is_readable($dir)) {
+            throw new InvalidArgumentException(sprintf('The directory "%s" is not readable.', $dir));
+        }
+
         return $this->scanDirectory($dir, $type);
     }
 

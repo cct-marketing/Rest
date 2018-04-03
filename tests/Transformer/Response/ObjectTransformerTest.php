@@ -143,8 +143,8 @@ class ObjectTransformerTest extends TestCase
     {
         $this->expectException(InvalidParameterException::class);
         $response = new Response(
-            '{ "message" : "Not Found" }',
-            404,
+            '{ "opps" : "Content type does not match json" }',
+            200,
             [
                 'Content-Type' => 'application/xml'
             ]

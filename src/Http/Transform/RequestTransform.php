@@ -40,7 +40,7 @@ class RequestTransform implements RequestTransformInterface
         }
 
         foreach ($this->transformers as $transformer) {
-            $this->applyRequestTransformers($transformer, $formData, $context);
+            $formData = $this->applyRequestTransformers($transformer, $formData, $context);
         }
 
         return $formData;
@@ -58,11 +58,13 @@ class RequestTransform implements RequestTransformInterface
     protected function applyRequestTransformers($transformer, $formData, ContextInterface $context = null)
     {
         if ($transformer instanceof RequestTransformerInterface && $transformer->supports($formData)) {
-            $transformer->transform($formData, $context);
+            return $transformer->transform($formData, $context);
         }
 
         if ($transformer instanceof \Closure) {
-            $transformer($formData);
+            return $transformer($formData);
         }
+
+        return $formData;
     }
 }

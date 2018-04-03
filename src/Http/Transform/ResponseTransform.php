@@ -29,15 +29,19 @@ class ResponseTransform implements ResponseTransformInterface
      * It is possible to handle the Response data defining the Config key response_transformers
      * with an instance of Closure or an instance of TransformerInterface.
      *
-     * @param ResponseInterface $data
+     * @param ResponseInterface $response
      * @param ContextInterface|null $context
      *
      * @return void
      */
-    public function transform(ResponseInterface $data, ContextInterface $context = null)
+    public function transform(ResponseInterface $response, ContextInterface $context = null)
     {
+        if (null === $response->getData()) {
+            return null;
+        }
+
         foreach ($this->transformers as $transformer) {
-            $this->applyResponseTransformer($transformer, $data, $context);
+            $this->applyResponseTransformer($transformer, $response, $context);
         }
     }
 
@@ -45,18 +49,21 @@ class ResponseTransform implements ResponseTransformInterface
      * Applied single response transformer
      *
      * @param ResponseTransformerInterface|\Closure $transformer
-     * @param ResponseInterface $data
+     * @param ResponseInterface $response
      * @param ContextInterface|null $context
      */
-    protected function applyResponseTransformer($transformer, ResponseInterface $data, ContextInterface $context = null)
-    {
-        if ($transformer instanceof ResponseTransformerInterface && $transformer->supports($data)) {
-            $transformer->transform($data, $context);
+    protected function applyResponseTransformer(
+        $transformer,
+        ResponseInterface $response,
+        ContextInterface $context = null
+    ) {
+        if ($transformer instanceof ResponseTransformerInterface && $transformer->supports($response)) {
+            $transformer->transform($response, $context);
             return;
         }
 
         if ($transformer instanceof \Closure) {
-            $transformer($data);
+            $transformer($response);
         }
     }
 }

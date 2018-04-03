@@ -17,17 +17,23 @@ class ObjectCollectionTransformer extends AbstractSerializerResponseTransformer
      */
     public function transform(ResponseInterface $response, ContextInterface $context = null)
     {
-        $data = $this->map($response->getData());
-        foreach ($data as $k => $object) {
-            $data[$k] = $this->serializer->deserialize(
-                json_encode($object),
-                $this->class,
-                'json',
-                $context ?? $this->context
+        $data = $response->getData();
+
+        if (count($this->mappingKeys) === 0) {
+            $response->setData(
+                $this->transformArrayPartial($data, $context)
             );
+            return;
         }
 
-        $response->setData($data);
+        $mappedData = $this->map($response->getData());
+        $transformedData = [];
+
+        foreach ($mappedData as $key => $transformingData) {
+            $transformedData[$key] = $this->transformArrayPartial($transformingData, $context);
+        }
+
+        $response->setData(array_merge($data, $transformedData));
     }
 
     /**
@@ -43,8 +49,30 @@ class ObjectCollectionTransformer extends AbstractSerializerResponseTransformer
             $response->isSuccessful()
             && $this->isArrayAndNotEmpty($data)
             && $this->mappingKeysExist($data)
-            && $this->isSequential($this->map($data))
+            && $this->isDataSequential($this->map($data))
         );
+    }
+
+    /**
+     * @param array $transformingData
+     * @param ContextInterface $context
+     *
+     * @return array
+     */
+    protected function transformArrayPartial(array $transformingData, ContextInterface $context = null): array
+    {
+        $transformedData = [];
+
+        foreach ($transformingData as $key => $object) {
+            $transformedData[$key] = $this->serializer->deserialize(
+                json_encode($object),
+                $this->class,
+                'json',
+                $context ?? $this->context
+            );
+        }
+
+        return $transformedData;
     }
 
     /**
@@ -74,21 +102,30 @@ class ObjectCollectionTransformer extends AbstractSerializerResponseTransformer
             return $data;
         }
 
-        foreach ($this->mappingKeys as $key) {
-            if (key_exists($key, $data)) {
-                return $data;
-            }
-        }
-        return [];
+        $mappingKeys = $this->mappingKeys;
+
+        return
+            array_filter(
+                $data,
+                function ($key) use ($mappingKeys) {
+                    return in_array($key, $mappingKeys);
+                },
+                ARRAY_FILTER_USE_KEY
+            );
     }
 
+    /**
+     * @param array $data
+     *
+     * @return bool
+     */
     protected function mappingKeysExist(array $data): bool
     {
         if (null === $this->mappingKeys) {
             return true;
         }
 
-        return (bool)count(array_intersect($this->mappingKeys, array_flip($data))) > 0;
+        return (bool)count(array_intersect($this->mappingKeys, array_keys($data))) > 0;
     }
 
     /**
@@ -107,7 +144,32 @@ class ObjectCollectionTransformer extends AbstractSerializerResponseTransformer
         $this->mappingKeys = $mappingKeys;
     }
 
-    public function isSequential($data)
+    /**
+     * @param array $data
+     *
+     * @return bool
+     */
+    protected function isDataSequential(array $data): bool
+    {
+        if (null === $this->mappingKeys) {
+            return $this->isSequential($data);
+        }
+
+        foreach ($data as $sequentialArray) {
+            if (false === $this->isSequential($sequentialArray)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return bool
+     */
+    protected function isSequential(array $data): bool
     {
         return array_keys($data) === range(0, count($data) - 1);
     }

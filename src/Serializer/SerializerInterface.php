@@ -18,7 +18,7 @@ interface SerializerInterface
     public function serialize($data, $format, ContextInterface $context = null);
 
     /**
-     * Deserializes the given data to the specified type.
+     * Deserialize the given data to the specified type.
      *
      * @param string $data
      * @param string $type
