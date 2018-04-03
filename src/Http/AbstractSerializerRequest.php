@@ -68,7 +68,7 @@ abstract class AbstractSerializerRequest extends AbstractRequest implements Seri
     protected function execute(
         $method,
         string $uri,
-        array $formData = [],
+        $formData = [],
         QueryParams $queryParams = null
     ): ResponseInterface {
         $response = parent::execute($method, $uri, $formData, $queryParams);

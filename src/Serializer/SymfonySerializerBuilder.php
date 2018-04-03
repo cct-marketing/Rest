@@ -63,19 +63,20 @@ class SymfonySerializerBuilder implements SerializerBuilderInterface
     {
         $this->encoders = array(new JsonEncoder());
 
-        $loaders = [];
+        $loadersCollection = [];
         $directoryLoader = new DirectoryLoader();
 
         $metadataDirs = $this->config->get(Config::METADATA_DIRS, []);
         foreach ($metadataDirs as $metadataDir) {
-            $newLoaders = $directoryLoader->load($metadataDir['dir']);
-            if (null === $newLoaders || 0 === count($newLoaders)) {
+            $loaders = $directoryLoader->load($metadataDir['dir']);
+            if (null === $loaders || 0 === count($loaders)) {
                 continue;
             }
-            array_push($loaders, ...$newLoaders);
+
+            array_push($loadersCollection, ...$loaders);
         }
 
-        $classMetadataFactory = new ClassMetadataFactory(new LoaderChain($loaders));
+        $classMetadataFactory = new ClassMetadataFactory(new LoaderChain($loadersCollection));
 
         $normalizer = new ObjectNormalizer($classMetadataFactory, new CamelCaseToSnakeCaseNameConverter());
         $this->normalizers = array($normalizer);
