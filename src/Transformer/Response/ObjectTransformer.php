@@ -34,6 +34,17 @@ class ObjectTransformer extends AbstractSerializerResponseTransformer
     {
         return
             $response->isSuccessful()
-            && !empty($response->getData());
+            && !empty($response->getData())
+            && false === $this->isSequential($response->getData());
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return bool
+     */
+    protected function isSequential(array $data): bool
+    {
+        return array_keys($data) === range(0, count($data) - 1);
     }
 }

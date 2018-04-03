@@ -148,7 +148,7 @@ abstract class AbstractRequest implements RequestInterface
     protected function execute(
         $method,
         string $uri,
-        array $formData = [],
+        $formData = [],
         QueryParams $queryParams = null
     ): ResponseInterface {
         $options = $this->getRequestOptions($formData, $queryParams);

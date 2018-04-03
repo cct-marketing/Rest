@@ -27,7 +27,7 @@ final class Context implements ContextInterface
     private $attributes = array();
 
     /**
-     * @var int|null
+     * @var string|null
      */
     private $version;
 

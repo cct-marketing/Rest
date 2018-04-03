@@ -55,7 +55,7 @@ class Response extends BaseResponse implements ResponseInterface
      */
     protected function jsonToArray(string $content = null): ?array
     {
-        if (null === $content || '' === trim($content)) {
+        if (empty($content)) {
             return null;
         }
 

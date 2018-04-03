@@ -137,11 +137,11 @@ abstract class AbstractClient
      *
      * @param Config $config
      *
-     * @return SerializerInterface
+     * @return SerializerInterface|null
      * @throws \JMS\Serializer\Exception\RuntimeException
      * @throws \JMS\Serializer\Exception\InvalidArgumentException
      */
-    protected function getBuiltSerializer(Config $config): SerializerInterface
+    protected function getBuiltSerializer(Config $config): ?SerializerInterface
     {
         if (null === static::$serializer) {
             static::$serializer = $this->buildSerializer($config);
