@@ -63,25 +63,40 @@ class SymfonySerializerBuilder implements SerializerBuilderInterface
     {
         $this->encoders = array(new JsonEncoder());
 
+        $loaders = $this->generateLoaders();
+
+        $classMetadataFactory = new ClassMetadataFactory(new LoaderChain($loaders));
+
+        $normalizer = new ObjectNormalizer($classMetadataFactory, new CamelCaseToSnakeCaseNameConverter());
+        $this->normalizers = array($normalizer);
+
+        return $this;
+    }
+
+    /**
+     * Generates loaders from directory config
+     *
+     * @return array
+     *
+     * @throws \Symfony\Component\Serializer\Exception\MappingException
+     * @throws \InvalidArgumentException
+     */
+    protected function generateLoaders(): array
+    {
         $loadersCollection = [];
         $directoryLoader = new DirectoryLoader();
 
         $metadataDirs = $this->config->get(Config::METADATA_DIRS, []);
         foreach ($metadataDirs as $metadataDir) {
             $loaders = $directoryLoader->load($metadataDir['dir']);
-            if (null === $loaders || 0 === count($loaders)) {
+            if (empty($loaders)) {
                 continue;
             }
 
             array_push($loadersCollection, ...$loaders);
         }
 
-        $classMetadataFactory = new ClassMetadataFactory(new LoaderChain($loadersCollection));
-
-        $normalizer = new ObjectNormalizer($classMetadataFactory, new CamelCaseToSnakeCaseNameConverter());
-        $this->normalizers = array($normalizer);
-
-        return $this;
+        return $loadersCollection;
     }
 
     /**
