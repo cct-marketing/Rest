@@ -65,9 +65,7 @@ class JMSSerializerBuilder implements SerializerBuilderInterface
 
     public function addEventSubscribers(EventSubscriberInterface $eventSubscriber)
     {
-        $this->config->merge([
-            Config::EVENT_SUBSCRIBERS => [$eventSubscriber]
-        ]);
+        $this->config->set(Config::EVENT_SUBSCRIBERS, [$eventSubscriber]);
 
         return $this;
     }

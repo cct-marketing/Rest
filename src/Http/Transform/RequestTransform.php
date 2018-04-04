@@ -33,7 +33,7 @@ class RequestTransform implements RequestTransformInterface
      *
      * @return array|object
      */
-    public function transform(array $formData = [], ContextInterface $context = null): array
+    public function transform($formData = [], ContextInterface $context = null): array
     {
         if (empty($formData)) {
             return $formData;

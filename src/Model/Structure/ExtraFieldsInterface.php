@@ -2,7 +2,7 @@
 
 namespace CCT\Component\Rest\Model\Structure;
 
-use CCT\Component\Rest\Collection\CollectionInterface;
+use CCT\Component\Collections\CollectionInterface;
 
 interface ExtraFieldsInterface
 {
