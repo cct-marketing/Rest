@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace CCT\Component\Rest\Model\Structure;
 
-use CCT\Component\Rest\Collection\ArrayCollection;
-use CCT\Component\Rest\Collection\CollectionInterface;
+use CCT\Component\Collections\ArrayCollection;
+use CCT\Component\Collections\CollectionInterface;
 
 trait ExtraFieldsTrait
 {

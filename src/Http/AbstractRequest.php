@@ -164,12 +164,12 @@ abstract class AbstractRequest implements RequestInterface
      *
      * @return array
      */
-    protected function getRequestOptions(array $formData = [], QueryParams $queryParams = null): array
+    protected function getRequestOptions($formData = [], QueryParams $queryParams = null): array
     {
         return [
             'form_params' => $formData,
-            'headers' => $this->getHeaders()->toArray(),
-            'query' => $queryParams !== null ? $queryParams->toArray() : []
+            'headers' => $this->getHeaders()->all(),
+            'query' => $queryParams !== null ? $queryParams->all() : []
         ];
     }
 

@@ -91,7 +91,7 @@ abstract class AbstractSerializerRequest extends AbstractRequest implements Seri
      *
      * @return array
      */
-    protected function getRequestOptions(array $formData = [], QueryParams $queryParams = null): array
+    protected function getRequestOptions($formData = [], QueryParams $queryParams = null): array
     {
         if (null !== $this->requestTransform) {
             $formData = $this->requestTransform->transform(

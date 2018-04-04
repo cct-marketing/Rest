@@ -7,7 +7,7 @@ use CCT\Component\Rest\Tests\Fixture\TestClient;
 use CCT\Component\Rest\Tests\Fixture\TestSerializerRequest;
 use JMS\Serializer\Serializer;
 use PHPUnit\Framework\TestCase;
-use Assert\InvalidArgumentException;
+use InvalidArgumentException;
 
 class ClientTest extends TestCase
 {

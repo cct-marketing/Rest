@@ -2,9 +2,9 @@
 
 namespace CCT\Component\Rest;
 
-use CCT\Component\Rest\Collection\ArrayCollection;
+use CCT\Component\Collections\ParameterCollection;
 
-class Config extends ArrayCollection
+class Config extends ParameterCollection
 {
     public const ENDPOINT = 'api.config.endpoint';
 

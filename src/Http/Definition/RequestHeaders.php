@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace CCT\Component\Rest\Http\Definition;
 
-use CCT\Component\Rest\Collection\ArrayCollection;
+use CCT\Component\Collections\ParameterCollection;
 
-class RequestHeaders extends ArrayCollection
+class RequestHeaders extends ParameterCollection
 {
     public static function create(array $params = [])
     {

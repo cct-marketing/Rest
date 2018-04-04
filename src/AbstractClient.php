@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace CCT\Component\Rest;
 
-use Assert\Assert;
 use CCT\Component\Rest\Exception\InvalidParameterException;
 use CCT\Component\Rest\Http\RequestInterface;
 use CCT\Component\Rest\Http\SerializerRequestInterface;
@@ -48,7 +47,11 @@ abstract class AbstractClient
      */
     public function __construct(Config $config, bool $defaultConfig = true)
     {
-        Assert::that($config->toArray())->keyExists(Config::ENDPOINT);
+        if (false === $config->has(Config::ENDPOINT)) {
+            throw new \InvalidArgumentException(
+                sprintf("Configuration key %s is missing", Config::ENDPOINT)
+            );
+        }
 
         $this->defaultConfig = $defaultConfig;
         $this->config = $config;
