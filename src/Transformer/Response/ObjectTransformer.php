@@ -5,6 +5,7 @@ namespace CCT\Component\Rest\Transformer\Response;
 use CCT\Component\Rest\Http\Response;
 use CCT\Component\Rest\Http\ResponseInterface;
 use CCT\Component\Rest\Serializer\ContextInterface;
+use function \count;
 
 class ObjectTransformer extends AbstractSerializerResponseTransformer
 {

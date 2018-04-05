@@ -16,7 +16,6 @@ class Config extends ParameterCollection
 
     public const DEBUG = 'api.config.debug';
 
-
     //Not sure about these?
     public const EVENT_SUBSCRIBERS = 'api.config.event_subscribers';
 

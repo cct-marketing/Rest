@@ -75,4 +75,21 @@ class RequestTransformTest extends TestCase
 
         $this->assertEmpty($formData);
     }
+
+    public function testTransformSupportsClosures()
+    {
+        $transformer = function () {
+            return ['Closure called'];
+        };
+
+        $requestTransform = new RequestTransform([$transformer]);
+        $formDataToTransform = [
+            'object' => [
+                'name' => 'test'
+            ]
+        ];
+        $formData = $requestTransform->transform($formDataToTransform);
+
+        $this->assertEquals(['Closure called'], $formData);
+    }
 }

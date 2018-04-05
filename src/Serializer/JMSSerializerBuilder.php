@@ -87,9 +87,10 @@ class JMSSerializerBuilder implements SerializerBuilderInterface
 
     public function addSerializationHandler(SubscribingHandlerInterface $subscribingHandler)
     {
-        $this->config->merge([
-            Config::SERIALIZATION_HANDLERS => [$subscribingHandler]
-        ]);
+        $this->config->set(
+            Config::SERIALIZATION_HANDLERS,
+            [$subscribingHandler]
+        );
 
         return $this;
     }

@@ -97,4 +97,21 @@ class ResponseTransformTest extends TestCase
             ]
         );
     }
+
+    public function testTransformSupportsClosures()
+    {
+
+        $response = $this->createOkResponse(
+            '{"data1":[{"heading":"heading 1","body":"body 1"}]}'
+        );
+
+        $transformer = function ($response) {
+            $response->setData(['Closure called']);
+        };
+
+        $responseTransform = new ResponseTransform([$transformer]);
+        $responseTransform->transform($response);
+
+        $this->assertEquals(['Closure called'], $response->getData());
+    }
 }

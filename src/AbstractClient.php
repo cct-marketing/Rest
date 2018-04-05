@@ -44,12 +44,14 @@ abstract class AbstractClient
      *
      * @param Config $config
      * @param bool $defaultConfig
+     *
+     * @throws \InvalidArgumentException
      */
     public function __construct(Config $config, bool $defaultConfig = true)
     {
         if (false === $config->has(Config::ENDPOINT)) {
             throw new \InvalidArgumentException(
-                sprintf("Configuration key %s is missing", Config::ENDPOINT)
+                sprintf('Configuration key %s is missing', Config::ENDPOINT)
             );
         }
 
