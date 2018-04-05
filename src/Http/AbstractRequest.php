@@ -191,7 +191,7 @@ abstract class AbstractRequest implements RequestInterface
             throw new ServiceUnavailableException($e->getRequest(), $e->getMessage());
         } catch (RequestException $e) {
             if (true === $e->hasResponse() && null !== $e->getResponse()->getBody()) {
-                $response = $e->getResponse();
+                return $e->getResponse();
             }
             throw $e;
         }
