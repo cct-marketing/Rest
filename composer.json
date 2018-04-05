@@ -5,8 +5,8 @@
     "require": {
         "php": "~7.1",
         "guzzlehttp/guzzle": "^6.2",
-        "symfony/yaml": "^4.0",
-        "symfony/http-foundation": "^4.0",
+        "symfony/yaml": "~3.2|~4.0",
+        "symfony/http-foundation": "~3.2|~4.0",
         "cct-marketing/collections": "~1.0"
     },
     "require-dev": {

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9e4815ebe4aa8c495249e2482cd1a11f",
+    "content-hash": "012422da1fca4faec980b0959aed01f8",
     "packages": [
         {
             "name": "cct-marketing/collections",
