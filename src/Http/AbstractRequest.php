@@ -190,10 +190,10 @@ abstract class AbstractRequest implements RequestInterface
         } catch (ConnectException $e) {
             throw new ServiceUnavailableException($e->getRequest(), $e->getMessage());
         } catch (RequestException $e) {
-            if (null === $e->getResponse()->getBody()) {
-                throw $e;
+            if (true === $e->hasResponse() && null !== $e->getResponse()->getBody()) {
+                $response = $e->getResponse();
             }
-            $response = $e->getResponse();
+            throw $e;
         }
 
         return $response;

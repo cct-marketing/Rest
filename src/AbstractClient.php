@@ -58,7 +58,8 @@ abstract class AbstractClient
         $this->defaultConfig = $defaultConfig;
         $this->config = $config;
         $this->client = new GuzzleClient([
-            'base_uri' => $config->get(Config::ENDPOINT)
+            'base_uri' => $config->get(Config::ENDPOINT),
+            'verify' => $config->get(Config::CURL_CA_VERIFY, true)
         ]);
 
         if ($defaultConfig) {

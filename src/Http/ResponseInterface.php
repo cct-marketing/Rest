@@ -33,7 +33,7 @@ interface ResponseInterface
      *
      * @return bool
      */
-    public function isSuccessful(): bool;
+    public function isSuccessful();
 
     /**
      * Gets the current response content.
