@@ -179,24 +179,13 @@ abstract class AbstractRequest implements RequestInterface
      * @param array $options
      *
      * @throws \GuzzleHttp\Exception\RequestException
-     * @throws ServiceUnavailableException
+     * @throws \GuzzleHttp\Exception\ConnectException
      *
      * @return PsrResponseInterface|object
      */
     protected function sendRequest($method, string $uri, array $options = [])
     {
-        try {
-            $response = $this->client->request($method, $uri, $options);
-        } catch (ConnectException $e) {
-            throw new ServiceUnavailableException($e->getRequest(), $e->getMessage());
-        } catch (RequestException $e) {
-            if (true === $e->hasResponse() && null !== $e->getResponse()->getBody()) {
-                return $e->getResponse();
-            }
-            throw $e;
-        }
-
-        return $response;
+        return $this->client->request($method, $uri, $options);
     }
 
     /**
