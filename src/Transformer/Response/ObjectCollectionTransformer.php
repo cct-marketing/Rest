@@ -22,7 +22,7 @@ class ObjectCollectionTransformer extends AbstractSerializerResponseTransformer
     {
         $data = $response->getData();
 
-        if (\count($this->mappingKeys) === 0) {
+        if (!is_array($this->mappingKeys) || \count($this->mappingKeys) === 0) {
             $response->setData(
                 $this->transformArrayPartial($data, $context)
             );
