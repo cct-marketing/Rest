@@ -20,7 +20,7 @@ class ClientTest extends TestCase
      */
     protected $serializer;
 
-    protected function setUp()
+    protected function setup(): void
     {
         $this->config = new Config([
             Config::ENDPOINT => 'http://example.com'

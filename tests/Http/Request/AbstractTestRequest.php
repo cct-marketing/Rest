@@ -49,7 +49,7 @@ abstract class AbstractTestRequest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setup(): void
     {
         $this->metadataPath = realpath(__DIR__ . '/../../Fixture/Resources/metadata');
         $this->responseDirectory = realpath(__DIR__ . '/../../Fixture/Resources/Response/');

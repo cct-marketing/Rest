@@ -9,6 +9,7 @@ use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerInterface as JMSSerializerInterface;
 
 /**
  * Adapter to plug the JMS serializer into the FOSRestBundle Serializer API.
@@ -31,7 +32,7 @@ class JMSSerializerAdapter implements SerializerInterface
     private $deserializationContextFactory;
 
     public function __construct(
-        Serializer $serializer,
+        JMSSerializerInterface $serializer,
         SerializationContextFactoryInterface $serializationContextFactory = null,
         DeserializationContextFactoryInterface $deserializationContextFactory = null
     ) {
@@ -126,7 +127,7 @@ class JMSSerializerAdapter implements SerializerInterface
     private function mapContextAttributes(ContextInterface $context, JMSContext $jmsContext)
     {
         foreach ($context->getAttributes() as $key => $value) {
-            $jmsContext->attributes->set($key, $value);
+            $jmsContext->setAttribute($key, $value);
         }
 
         $this->mapVersion($context, $jmsContext);

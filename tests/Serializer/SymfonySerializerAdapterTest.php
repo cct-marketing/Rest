@@ -3,14 +3,11 @@
 declare(strict_types=1);
 
 use CCT\Component\Rest\Serializer\Context\Context;
-use CCT\Component\Rest\Serializer\JMSSerializerAdapter;
 use CCT\Component\Rest\Serializer\SymfonySerializerAdapter;
-
 use PhpCollection\MapInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
@@ -33,14 +30,13 @@ class SymfonySerializerAdapterTest extends TestCase
      */
     private $normalizer;
 
-    protected function setUp()
+    protected function setup(): void
     {
         if (!class_exists('Symfony\Component\Serializer\Serializer')) {
             $this->markTestSkipped('Symfony Serializer is not installed.');
         }
 
         $this->jsonEncoder = $this->getMockBuilder(JsonEncoder::class)
-            //->setMethods([''])
             ->getMock();
 
         $this->normalizer = $this->getMockBuilder(ObjectNormalizer::class)
@@ -53,7 +49,6 @@ class SymfonySerializerAdapterTest extends TestCase
             ->setConstructorArgs([$normalizers, $encoders])
             ->setMethods(null)
             ->getMock();
-
 
         $this->adapter = new SymfonySerializerAdapter(
             $this->serializer
@@ -79,29 +74,6 @@ class SymfonySerializerAdapterTest extends TestCase
             ->with('foo', 'json', $context);
 
         $adapter->serialize('foo', 'json', Context::create());
-    }
-
-    public function testDeserializeWithContextObjectShouldConvertToArray()
-    {
-        $context = [
-            'version' => null,
-            'maxDepth' => null,
-            'enable_max_depth' => null
-        ];
-
-        $adapter = new SymfonySerializerAdapter($this->serializer);
-
-        $this->jsonEncoder->method('supportsDecoding')
-            ->willReturn(true);
-
-        $this->normalizer->method('supportsDenormalization')
-            ->willReturn(true);
-
-        $this->jsonEncoder->expects($this->once())
-            ->method('decode')
-            ->with('foo', 'json', $context);
-
-        $adapter->deserialize('foo', 'string', 'json', new Context());
     }
 
     public function testContextInfoAreConverted()

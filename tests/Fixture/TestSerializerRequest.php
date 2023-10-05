@@ -9,7 +9,7 @@ use CCT\Component\Rest\Serializer\Context\Context;
 
 class TestSerializerRequest extends AbstractSerializerRequest
 {
-    protected function setUp(): void
+    protected function setup(): void
     {
         $this->config->set(Config::URI_PREFIX, '/test/');
     }

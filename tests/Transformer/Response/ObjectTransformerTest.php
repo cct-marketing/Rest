@@ -34,7 +34,7 @@ class ObjectTransformerTest extends TestCase
      */
     protected $namespacePrefix;
 
-    public function setup()
+    public function setup(): void
     {
         $this->metadataPath = realpath(__DIR__ . '/../../Fixture/Resources/metadata');
         $this->responseDirectory = realpath(__DIR__ . '/../../Fixture/Resources/Response/');

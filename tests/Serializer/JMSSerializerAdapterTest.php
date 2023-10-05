@@ -10,6 +10,7 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerInterface;
 use PhpCollection\MapInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -23,13 +24,13 @@ class JMSSerializerAdapterTest extends TestCase
 
     private $adapter;
 
-    protected function setUp()
+    protected function setup(): void
     {
         if (!class_exists('JMS\Serializer\Serializer')) {
             $this->markTestSkipped('JMSSerializer is not installed.');
         }
 
-        $this->serializer = $this->getMockBuilder(Serializer::class)
+        $this->serializer = $this->getMockBuilder(SerializerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -100,14 +101,17 @@ class JMSSerializerAdapterTest extends TestCase
     {
         $exclusion = $this->getMockBuilder(ExclusionStrategyInterface::class)->getMock();
         $jmsContext = $this->getMockBuilder(SerializationContext::class)->getMock();
-        $jmsContext->attributes = $this->getMockBuilder(MapInterface::class)->getMock();
+        foreach ($this->getMockBuilder(MapInterface::class)->getMock() as $k => $v) {
+            $jmsContext->setAttribute($k, $v);
+        }
+        //$jmsContext->attributes = $this->getMockBuilder(MapInterface::class)->getMock();
         $jmsContext->expects($this->once())->method('setGroups')->with(['foo']);
         $jmsContext->expects($this->once())->method('setSerializeNull')->with(true);
         $jmsContext->expects($this->once())->method('enableMaxDepthChecks');
         $jmsContext->expects($this->once())->method('setVersion')->with('5.0.1');
         $jmsContext->expects($this->once())->method('addExclusionStrategy')->with($exclusion);
 
-        $jmsContext->attributes->expects($this->once())->method('set')->with('foo', 'bar');
+        $jmsContext->expects($this->once())->method('setAttribute')->with('foo', 'bar');
 
         $this->serializationContextFactory->method('createSerializationContext')->willReturn($jmsContext);
 
