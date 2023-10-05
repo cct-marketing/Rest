@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9d700fe08e96e7425166c65f332d5267",
+    "content-hash": "5de389b82c14463a6336076f7c1e768c",
     "packages": [
         {
             "name": "cct-marketing/collections",
